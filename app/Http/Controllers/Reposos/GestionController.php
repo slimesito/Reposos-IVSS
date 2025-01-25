@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Http\Controllers\Reposos;
+
+use App\Http\Controllers\Controller;
+use App\Models\Reposo;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+
+class GestionController extends Controller
+{
+    public function gestionRepososView()
+    {
+        $reposos = Reposo::with('servicio', 'capitulo', )->where('cod_estatus', 3)->paginate(10);
+
+        return view('gestion.reposos', compact('reposos'));
+    }
+
+    public function aprobarReposo($id)
+    {
+        $reposo = Reposo::findOrFail($id);
+        $reposo->cod_estatus = 1;
+        $reposo->id_validacion = auth()->user()->id;
+        $reposo->fecha_validacion = now();
+        $reposo->save();
+
+        return redirect()->back()->with('success', 'Reposo aprobado correctamente.');
+    }
+
+    public function rechazarReposo($id)
+    {
+        $reposo = Reposo::findOrFail($id);
+        $reposo->cod_estatus = 5;
+        $reposo->id_anulacion = auth()->user()->id;
+        $reposo->fecha_anulacion = now();
+        $reposo->save();
+
+        return redirect()->back()->with('success', 'Reposo rechazado correctamente.');
+    }
+}
