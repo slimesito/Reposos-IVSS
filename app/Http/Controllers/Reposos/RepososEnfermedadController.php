@@ -55,21 +55,11 @@ class RepososEnfermedadController extends Controller
     {
         $servicios = Servicio::all();
         $capitulos = Capitulo::where('id', '!=', 16)->get();
+        $patologiasGenerales = PatologiaGeneral::all();
+        $patologiasEspecificas = PatologiaEspecifica::all();
         $lugares = Lugar::all();
         $motivos = Motivo::all();
-        return view('reposos.nuevo_reposo_enfermedad', compact('servicios', 'capitulos', 'lugares', 'motivos'));
-    }
-
-    public function getPatologiasGenerales($capituloId)
-    {
-        $patologiasGenerales = PatologiaGeneral::where('capitulo_id', $capituloId)->get();
-        return response()->json($patologiasGenerales);
-    }
-
-    public function getPatologiasEspecificas($capituloId)
-    {
-        $patologiasEspecificas = PatologiaEspecifica::where('capitulo_id', $capituloId)->get();
-        return response()->json($patologiasEspecificas);
+        return view('reposos.nuevo_reposo_enfermedad', compact('servicios', 'capitulos', 'patologiasGenerales', 'patologiasEspecificas', 'lugares', 'motivos'));
     }
 
     public function createReposoEnfermedad(Request $request)

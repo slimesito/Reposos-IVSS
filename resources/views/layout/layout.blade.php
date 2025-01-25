@@ -292,9 +292,6 @@
     <!-- Buscador Select -->
     <script src="{!! asset('assets/js/buscadorSelects.js') !!}"></script>
 
-    <!-- formHandler -->
-    <script src="{{ asset('assets/js/formHandler.js') }}"></script>
-
     <!-- formHandlerPatologia -->
     <script src="{{ asset('assets/js/formHandlerPatologia.js') }}"></script>
 
