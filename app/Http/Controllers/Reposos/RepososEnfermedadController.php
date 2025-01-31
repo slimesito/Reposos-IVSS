@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Reposos;
 use App\Http\Controllers\Controller;
 use App\Models\AseguradoEmpresa;
 use App\Models\Capitulo;
+use App\Models\Ciudadano;
 use App\Models\Expediente;
 use App\Models\Forma_14144;
 use App\Models\Lugar;
@@ -17,6 +18,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Illuminate\Support\Facades\Storage;
 
 class RepososEnfermedadController extends Controller
 {
@@ -64,7 +67,8 @@ class RepososEnfermedadController extends Controller
 
     public function createReposoEnfermedad(Request $request)
     {
-        $request->validate([
+        // Validación de datos
+        $validatedData = $request->validate([
             'id_capitulo' => 'required|numeric',
             'id_pat_general' => 'required|numeric',
             'id_pat_especifica' => 'numeric',
@@ -78,117 +82,139 @@ class RepososEnfermedadController extends Controller
         ]);
 
         try {
-            $nextIdReposo = DB::selectOne("SELECT BDSAIVSSID.REPOSOS_ID_SEQ.NEXTVAL as id FROM dual")->id;
-            
-            $cedula = session('cedula');
+            DB::transaction(function () use ($request, &$nextIdReposo, &$expediente, &$reposo, &$forma_14144) {
+                $nextIdReposo = DB::selectOne("SELECT BDSAIVSSID.REPOSOS_ID_SEQ.NEXTVAL as id FROM dual")->id;
 
-            // Buscar el id_asegurado y id_empresa en la tabla Asegurado_Empresa usando la cédula y con estatus Activo
-            $aseguradoEmpresa = AseguradoEmpresa::where('id_asegurado', $cedula)
-                                                ->where('id_estatus_asegurado', 'A')
-                                                ->whereNotNull('id_empresa')
-                                                ->whereNotNull('id_asegurado')
-                                                ->first();
+                $cedula = session('cedula');
+                $usuario = auth()->user(); // Obtener el usuario autenticado
 
-            $idAsegurado = $aseguradoEmpresa->id_asegurado;
-            $idEmpresa = $aseguradoEmpresa->id_empresa;
-            $salarioMensual = $aseguradoEmpresa->salario_mensual;
+                // Verificar y ajustar la cédula para buscar en la tabla Ciudadano
+                $prefijo = substr($cedula, 0, 1) === '1' ? 'V' : (substr($cedula, 0, 1) === '2' ? 'E' : null);
+                $cedulaAjustada = $prefijo ? $prefijo . substr($cedula, 1) : $cedula;
 
-            if (!$idEmpresa) {
-                return redirect()->back()->with('error', 'No se encontró la empresa asociada al asegurado.');
-            }
+                // Buscar ciudadano en la tabla Ciudadano
+                $ciudadano = Ciudadano::where('id_ciudadano', $cedulaAjustada)->first();
 
-            // Buscar o crear el expediente asociado y actualizar cantidad_reposos si ya existe
-            $expediente = Expediente::firstOrNew(['cedula' => $cedula]);
+                // Buscar el id_asegurado y id_empresa en la tabla Asegurado_Empresa usando la cédula y con estatus Activo
+                $aseguradoEmpresa = AseguradoEmpresa::where('id_asegurado', $cedula)
+                                                    ->where('id_estatus_asegurado', 'A')
+                                                    ->whereNotNull('id_empresa')
+                                                    ->whereNotNull('id_asegurado')
+                                                    ->first();
 
-            if ($expediente->exists) {
-                $expediente->cantidad_reposos += 1;
-                $expediente->id_update = auth()->user()->id;
-                $expediente->fecha_update = now();
+                $idAsegurado = $aseguradoEmpresa->id_asegurado;
+                $idEmpresa = $aseguradoEmpresa->id_empresa;
+                $salarioMensual = $aseguradoEmpresa->salario_mensual;
+
+                if (!$idEmpresa) {
+                    return redirect()->back()->with('error', 'No se encontró la empresa asociada al asegurado.');
+                }
+
+                // Buscar o crear el expediente asociado y actualizar cantidad_reposos si ya existe
+                $expediente = Expediente::firstOrNew(['cedula' => $cedula]);
+
+                if ($expediente->exists) {
+                    $expediente->cantidad_reposos += 1;
+                    $expediente->id_update = auth()->user()->id;
+                    $expediente->fecha_update = now();
+
+                    // Buscar todos los reposos de la persona y sumar los días indemnizables
+                    $totalDiasIndemnizar = Reposo::where('cedula', $cedula)->sum('dias_indemnizar');
+                    $expediente->dias_acumulados = $totalDiasIndemnizar;
+                } else {
+                    $expediente->cantidad_reposos = 1;
+                    $expediente->cantidad_prorrogas = 0;
+                    $expediente->dias_acumulados = 0;
+                    $expediente->semanas_acumuladas = 0;
+                    $expediente->dias_pendientes = 0;
+                    $expediente->id_ultimo_cent_asist = $usuario->id_centro_asistencial;
+                    $expediente->es_abierto = true;
+                    $expediente->id_create = $usuario->id;
+                    $expediente->fecha_create = now();
+                }
+
+                $expediente->save();
+
+                $codEstatus = ($expediente->cantidad_reposos >= 4) ? 3 : 1;
+                $inicioReposo = Carbon::parse($request->inicio_reposo);
+                $finReposo = Carbon::parse($request->fin_reposo);
+                $diasIndemnizar = $inicioReposo->diffInDays($finReposo) + 1; // +1 para incluir el día de inicio
+
+                $salarioDiario = $salarioMensual / 30; // Suponiendo un mes de 30 días
+
+                $reposo = Reposo::create([
+                    'id' => $nextIdReposo,
+                    'id_expediente' => $expediente->id,
+                    'cedula' => $cedula,
+                    'id_empresa' => $idEmpresa,
+                    'id_servicio' => $usuario->id_servicio, // Obtener el servicio del usuario autenticado
+                    'id_capitulo' => $request->id_capitulo,
+                    'id_pat_general' => $request->id_pat_general,
+                    'id_pat_especifica' => $request->id_pat_especifica,
+                    'id_lugar' => $request->id_lugar,
+                    'cod_motivo' => $request->cod_motivo,
+                    'inicio_reposo' => $request->inicio_reposo,
+                    'fin_reposo' => $request->fin_reposo,
+                    'reintegro' => $request->reintegro,
+                    'debe_volver' => $request->debe_volver,
+                    'convalidado' => 1,
+                    'es_enfermedad' => 1,
+                    'es_prenatal' => 0,
+                    'es_postnatal' => 0,
+                    'cod_estatus' => $codEstatus,
+                    'dias_indemnizar' => $diasIndemnizar,
+                    'id_create' => $usuario->id,
+                    'fecha_create' => now(),
+                    'id_cent_asist' => $usuario->id_centro_asistencial, // Obtener el centro asistencial del usuario autenticado
+                    'email_trabajador' => $request->email_trabajador,
+                ]);
 
                 // Buscar todos los reposos de la persona y sumar los días indemnizables
                 $totalDiasIndemnizar = Reposo::where('cedula', $cedula)->sum('dias_indemnizar');
                 $expediente->dias_acumulados = $totalDiasIndemnizar;
-            } else {
-                $expediente->cantidad_reposos = 1;
-                $expediente->cantidad_prorrogas = 0;
-                $expediente->dias_acumulados = 0;
-                $expediente->semanas_acumuladas = 0;
-                $expediente->dias_pendientes = 0;
-                $expediente->id_ultimo_cent_asist = auth()->user()->id_centro_asistencial;
-                $expediente->es_abierto = true;
-                $expediente->id_create = auth()->user()->id;
-                $expediente->fecha_create = now();
-            }
+                $expediente->id_ultimo_reposo = $reposo->id;
+                $expediente->save();
 
-            $expediente->save();
+                $salarioDiario = $salarioMensual / 30;
 
-            $codEstatus = ($expediente->cantidad_reposos >= 4) ? 3 : 1;
-            $inicioReposo = Carbon::parse($request->inicio_reposo);
-            $finReposo = Carbon::parse($request->fin_reposo);
-            $diasIndemnizar = $inicioReposo->diffInDays($finReposo) + 1; // +1 para incluir el día de inicio
+                $forma_14144 = Forma_14144::create([
+                    'id_forma14144' => $nextIdReposo,
+                    'id_centro_asistencial' => $usuario->id_centro_asistencial, // Obtener el centro asistencial del usuario autenticado
+                    'numero_relacion' => $nextIdReposo,
+                    'fecha_elaboracion' => now(),
+                    'numero_pagina' => 1,
+                    'id_empresa' => $idEmpresa,
+                    'id_asegurado' => $cedula,
+                    'tipo_atencion' => 1,
+                    'fecha_comienzo' => $request->inicio_reposo,
+                    'tipo_concepto' => 1,
+                    'fecha_desde' => $request->inicio_reposo,
+                    'fecha_hasta' => $request->fin_reposo,
+                    'dias_reposo' => $diasIndemnizar,
+                    'dias_indemnizar' => $diasIndemnizar,
+                    'monto_diario_indemnizar' => ($salarioDiario * 2) / 3, // Ajustado
+                    'certificado_incapacidad' => 'N',
+                    'id_usuario' => $usuario->id,
+                    'fecha_transcripcion' => now(),
+                    'pago_factura' => 'N',
+                ]);
 
-            $salarioDiario = $salarioMensual / 30; // Suponiendo un mes de 30 días
+                // Generar PDF
+                $data = [
+                    'reposo' => $reposo,
+                    'expediente' => $expediente,
+                    'aseguradoEmpresa' => $aseguradoEmpresa,
+                    'ciudadano' => $ciudadano, // Agregar los datos del ciudadano a la data
+                    'usuario' => $usuario, // Pasar el usuario autenticado a la vista
+                    'fecha_elaboracion' => now()->format('d/m/Y'),
+                ];
 
-            $reposo = Reposo::create([
-                'id' => $nextIdReposo,
-                // 'numero_ref_reposo' => $request->numero_ref_reposo,
-                'id_expediente' => $expediente->id,
-                'cedula' => $cedula,
-                'id_empresa' => $idEmpresa,
-                'id_servicio' => auth()->user()->id_servicio,
-                'id_capitulo' => $request->id_capitulo,
-                'id_pat_general' => $request->id_pat_general,
-                'id_pat_especifica' => $request->id_pat_especifica,
-                'id_lugar' => $request->id_lugar,
-                'cod_motivo' => $request->cod_motivo,
-                'inicio_reposo' => $request->inicio_reposo,
-                'fin_reposo' => $request->fin_reposo,
-                'reintegro' => $request->reintegro,
-                'debe_volver' => $request->debe_volver,
-                'convalidado' => 1,
-                'es_enfermedad' => 1,
-                'es_prenatal' => 0,
-                'es_postnatal' => 0,
-                'cod_estatus' => $codEstatus,
-                'dias_indemnizar' => $diasIndemnizar,
-                'id_create' => auth()->user()->id,
-                'fecha_create' => now(),
-                'id_cent_asist' => auth()->user()->id_centro_asistencial,
-                'email_trabajador' => $request->email_trabajador,
-            ]);
+                $pdf = PDF::loadView('reposos.certificado_pdf', $data);
+                $pdf->save(storage_path('app/public/app/assets/certificados/F-14-73_ENFERMEDAD_'.$reposo->id.'.pdf'));
+            });
 
-            // Buscar todos los reposos de la persona y sumar los días indemnizables
-            $totalDiasIndemnizar = Reposo::where('cedula', $cedula)->sum('dias_indemnizar');
-            $expediente->dias_acumulados = $totalDiasIndemnizar;
-            $expediente->id_ultimo_reposo = $reposo->id;
-            $expediente->save();
+            return redirect('/inicio')->with('success', 'Reposo registrado exitosamente! Se ha generado el PDF.');
 
-            $salarioDiario = $salarioMensual / 30;
-
-            $forma_14144 = Forma_14144::create([
-                'id_forma14144' => $nextIdReposo,
-                'id_centro_asistencial' => auth()->user()->id_centro_asistencial,
-                'numero_relacion' => $nextIdReposo,
-                'fecha_elaboracion' => now(),
-                'numero_pagina' => 1,
-                'id_empresa' => $idEmpresa,
-                'id_asegurado' => $cedula,
-                'tipo_atencion' => 1,
-                'fecha_comienzo' => $request->inicio_reposo,
-                'tipo_concepto' => 1,
-                'fecha_desde' => $request->inicio_reposo,
-                'fecha_hasta' => $request->fin_reposo,
-                'dias_reposo' => $diasIndemnizar,
-                'dias_indemnizar' => $diasIndemnizar,
-                'monto_diario_indemnizar' => ($salarioDiario * 2) / 3, // Ajustado
-                'certificado_incapacidad' => 'N',
-                'id_usuario' => auth()->user()->id,
-                'fecha_transcripcion' => now(),
-                'pago_factura' => 'N',
-            ]);
-
-            return redirect('/inicio')->with('success', 'Reposo registrado exitosamente!');
-        
         } catch (\Exception $e) {
             Log::error('Error al registrar el Reposo: ' . $e->getMessage(), [
                 'exception' => $e,
@@ -198,4 +224,5 @@ class RepososEnfermedadController extends Controller
             return redirect()->back()->with('error', 'Error al registrar el Reposo. Inténtalo nuevamente.');
         }
     }
+
 }

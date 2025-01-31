@@ -36,9 +36,11 @@
 
     <!-- select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="{!! asset('app/css/select2.css') !!}" rel="stylesheet" />
+
+    <!-- Alerta Reposos -->
+    <link rel="stylesheet" href="{!! asset('assets/css/alertaReposos.css') !!}">
 
 </head>
 
@@ -236,6 +238,8 @@
                     <div class="col-sm-12 col-xl-12">
 
                         @include('layout.alerts.success-message')
+
+                        @include('layout.alerts.reposos-success')
 
                         @include('layout.alerts.error-message')
 

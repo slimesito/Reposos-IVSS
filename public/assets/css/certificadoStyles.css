@@ -1,0 +1,82 @@
+@page {
+    size: letter landscape;
+    margin: 15mm;
+}
+
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 10px;
+}
+
+.container {
+    width: 100%;
+    margin: 0 auto;
+    border: none;
+    padding: 10px;
+}
+
+.header {
+    text-align: left;
+    position: relative;
+    white-space: nowrap;
+    margin-top: 10px;
+}
+
+.header img {
+    width: 60px;
+    float: left;
+    margin-right: 10px;
+    margin-left: 20px;
+}
+
+.header p {
+    margin: 2px;
+    font-size: 10px;
+}
+
+.section {
+    margin-top: 10px;
+}
+
+.section h1 {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 18px;
+}
+
+.section table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+}
+
+.section table, .section th, .section td {
+    border: 1px solid #000;
+}
+
+.section th, .section td {
+    padding: 3px;
+    text-align: left;
+}
+
+.section th {
+    background-color: #f2f2f2;
+}
+
+.tables-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Asegurar que ambas tablas estén a la misma altura */
+}
+
+.table-wrapper {
+    flex: 1;
+}
+
+.left-table {
+    text-align: left;
+}
+
+.right-table {
+    text-align: right;
+}
