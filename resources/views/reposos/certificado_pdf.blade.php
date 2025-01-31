@@ -55,7 +55,7 @@
                     <th>GÉNERO:</th>
                 </tr>
                 <tr>
-                    <td>{{ $reposo->cedula }}</td>
+                    <td>{{ $cedula_formateada }}</td>
                     <td>{{ $ciudadano->primer_nombre }} {{ $ciudadano->segundo_nombre }} {{ $ciudadano->primer_apellido }} {{ $ciudadano->segundo_apellido }}</td>
                     <td>{{ \Carbon\Carbon::parse($ciudadano->fecha_nacimiento)->format('d/m/Y') }}</td>
                     <td>{{ $ciudadano->sexo }}</td>

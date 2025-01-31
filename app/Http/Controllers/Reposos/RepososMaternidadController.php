@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Reposos;
 use App\Http\Controllers\Controller;
 use App\Models\AseguradoEmpresa;
 use App\Models\Capitulo;
+use App\Models\Ciudadano;
 use App\Models\Expediente;
 use App\Models\Forma_14144;
 use App\Models\Lugar;
@@ -13,6 +14,7 @@ use App\Models\PatologiaEspecifica;
 use App\Models\PatologiaGeneral;
 use App\Models\Reposo;
 use App\Models\Servicio;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -74,6 +76,7 @@ class RepososMaternidadController extends Controller
             'fin_reposo' => 'required|date',
             'reintegro' => 'required|date',
             'debe_volver' => 'required|boolean',
+            'observaciones' => 'nullable|string',
             'email_trabajador' => 'required|email',
         ]);
 
@@ -82,6 +85,14 @@ class RepososMaternidadController extends Controller
                 $nextIdReposo = DB::selectOne("SELECT BDSAIVSSID.REPOSOS_ID_SEQ.NEXTVAL as id FROM dual")->id;
 
                 $cedula = session('cedula');
+                $usuario = auth()->user();
+
+                // Verificar y ajustar la cédula para buscar en la tabla Ciudadano
+                $prefijo = substr($cedula, 0, 1) === '1' ? 'V' : (substr($cedula, 0, 1) === '2' ? 'E' : null);
+                $cedulaAjustada = $prefijo ? $prefijo . substr($cedula, 1) : $cedula;
+
+                // Buscar ciudadano en la tabla Ciudadano
+                $ciudadano = Ciudadano::where('id_ciudadano', $cedulaAjustada)->first();
 
                 // Buscar el id_asegurado y id_empresa en la tabla Asegurado_Empresa usando la cédula y con estatus Activo
                 $aseguradoEmpresa = AseguradoEmpresa::where('id_asegurado', $cedula)
@@ -105,6 +116,9 @@ class RepososMaternidadController extends Controller
                     $expediente->cantidad_reposos += 1;
                     $expediente->id_update = auth()->user()->id;
                     $expediente->fecha_update = now();
+                    // Buscar todos los reposos de la persona y sumar los días indemnizables
+                    $totalDiasIndemnizar = Reposo::where('cedula', $cedula)->sum('dias_indemnizar');
+                    $expediente->dias_acumulados = $totalDiasIndemnizar;
                 } else {
                     $expediente->cantidad_reposos = 1;
                     $expediente->cantidad_prorrogas = 0;
@@ -151,7 +165,8 @@ class RepososMaternidadController extends Controller
                     'id_create' => auth()->user()->id,
                     'fecha_create' => now(),
                     'id_cent_asist' => auth()->user()->id_centro_asistencial,
-                    'email_trabajador' => $request->email_trabajador,
+                    'observaciones' => strtoupper($request->observaciones),
+                    'email_trabajador' => strtoupper($request->email_trabajador),
                 ]);
 
                 $totalDiasIndemnizar = Reposo::where('cedula', $cedula)->sum('dias_indemnizar');
@@ -182,6 +197,19 @@ class RepososMaternidadController extends Controller
                     'fecha_transcripcion' => now(),
                     'pago_factura' => 'N',
                 ]);
+
+                // Generar PDF
+                $data = [
+                    'reposo' => $reposo,
+                    'expediente' => $expediente,
+                    'aseguradoEmpresa' => $aseguradoEmpresa,
+                    'ciudadano' => $ciudadano, // Agregar los datos del ciudadano a la data
+                    'usuario' => $usuario, // Pasar el usuario autenticado a la vista
+                    'fecha_elaboracion' => now()->format('d/m/Y'),
+                ];
+
+                $pdf = PDF::loadView('reposos.certificado_pdf', $data);
+                $pdf->save(storage_path('app/public/app/assets/certificados/F-14-73_ENFERMEDAD_'.$reposo->id.'.pdf'));
             });
 
             return redirect('/inicio')->with('success', 'Reposo registrado exitosamente!');

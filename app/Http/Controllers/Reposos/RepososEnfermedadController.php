@@ -78,6 +78,7 @@ class RepososEnfermedadController extends Controller
             'fin_reposo' => 'required|date',
             'reintegro' => 'required|date',
             'debe_volver' => 'required|boolean',
+            'observaciones' => 'nullable|string',
             'email_trabajador' => 'required|email',
         ]);
 
@@ -117,7 +118,6 @@ class RepososEnfermedadController extends Controller
                     $expediente->cantidad_reposos += 1;
                     $expediente->id_update = auth()->user()->id;
                     $expediente->fecha_update = now();
-
                     // Buscar todos los reposos de la persona y sumar los días indemnizables
                     $totalDiasIndemnizar = Reposo::where('cedula', $cedula)->sum('dias_indemnizar');
                     $expediente->dias_acumulados = $totalDiasIndemnizar;
@@ -166,7 +166,8 @@ class RepososEnfermedadController extends Controller
                     'id_create' => $usuario->id,
                     'fecha_create' => now(),
                     'id_cent_asist' => $usuario->id_centro_asistencial, // Obtener el centro asistencial del usuario autenticado
-                    'email_trabajador' => $request->email_trabajador,
+                    'observaciones' => strtoupper($request->observaciones),
+                    'email_trabajador' => strtoupper($request->email_trabajador),
                 ]);
 
                 // Buscar todos los reposos de la persona y sumar los días indemnizables
@@ -199,6 +200,17 @@ class RepososEnfermedadController extends Controller
                     'pago_factura' => 'N',
                 ]);
 
+                 // Formatear la cédula para el PDF
+                $cedula = $reposo->cedula;
+                $formattedCedula = ltrim(substr($cedula, 1), '0'); // Eliminar ceros de relleno
+                $prefix = substr($cedula, 0, 1);
+                if ($prefix == '1') {
+                    $prefix = 'V';
+                } elseif ($prefix == '2') {
+                    $prefix = 'E';
+                }
+                $cedulaFormateada = $prefix . '-' . $formattedCedula;
+
                 // Generar PDF
                 $data = [
                     'reposo' => $reposo,
@@ -206,6 +218,7 @@ class RepososEnfermedadController extends Controller
                     'aseguradoEmpresa' => $aseguradoEmpresa,
                     'ciudadano' => $ciudadano, // Agregar los datos del ciudadano a la data
                     'usuario' => $usuario, // Pasar el usuario autenticado a la vista
+                    'cedula_formateada' => $cedulaFormateada, // Pasar la cédula formateada a la vista
                     'fecha_elaboracion' => now()->format('d/m/Y'),
                 ];
 
@@ -213,7 +226,7 @@ class RepososEnfermedadController extends Controller
                 $pdf->save(storage_path('app/public/app/assets/certificados/F-14-73_ENFERMEDAD_'.$reposo->id.'.pdf'));
             });
 
-            return redirect('/inicio')->with('success', 'Reposo registrado exitosamente! Se ha generado el PDF.');
+            return redirect('/inicio')->with('success', 'Reposo registrado exitosamente!');
 
         } catch (\Exception $e) {
             Log::error('Error al registrar el Reposo: ' . $e->getMessage(), [

@@ -78,4 +78,9 @@ class StringHelpers
     {
         return strtoupper($string);
     }
+
+    public static function strtoupper_searchRepososPendientes($string)
+    {
+        return strtoupper($string);
+    }
 }

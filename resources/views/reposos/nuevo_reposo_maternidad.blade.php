@@ -138,6 +138,11 @@
                 <label for="exampleInputEmail1" class="form-label">Correo Electrónico del Trabajador:</label>
                 <input type="text" name="email_trabajador" class="form-control" id="email_trabajador" aria-describedby="emailHelp" required>
             </div>
+
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Observaciones:</label>
+                <input type="text" name="observaciones" class="form-control" id="observaciones" aria-describedby="emailHelp">
+            </div>
             
             <button class="btn btn-lg btn-primary m-2">Registrar</button>
 

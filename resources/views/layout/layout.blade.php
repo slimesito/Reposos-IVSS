@@ -130,7 +130,7 @@
                         <a href="" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-solid fa-list me-2"></i>Gestión</a>
                         <div class="dropdown-menu bg-transparent border-0">
                             <a href="{{ route('gestion.reposos.view') }}" class="dropdown-item">Reposos por Aprobar</a>
-                            <a href="{{-- {{ route('validar.cedula.reposo.maternindad.view') }} --}}" class="dropdown-item">Prórrogas por Aprobar</a>
+                            {{-- <a href="{{ route('validar.cedula.reposo.maternindad.view') }}" class="dropdown-item">Prórrogas por Aprobar</a> --}}
                         </div>
                     </div>
 

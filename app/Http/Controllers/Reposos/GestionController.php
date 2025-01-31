@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Reposos;
 
+use App\Helpers\StringHelpers;
 use App\Http\Controllers\Controller;
 use App\Models\Reposo;
 use Carbon\Carbon;
@@ -14,6 +15,17 @@ class GestionController extends Controller
         $reposos = Reposo::with('servicio', 'capitulo', )->where('cod_estatus', 3)->paginate(10);
 
         return view('gestion.reposos', compact('reposos'));
+    }
+
+    public function buscadorRepososPendientes(Request $request)
+    {
+        $query = StringHelpers::strtoupper_searchRepososPendientes($request->input('repososPendientesQuery'));
+
+        $reposos = Reposo::where('cedula', 'LIKE', '%' . $query . '%')
+            ->paginate(20)
+            ->appends(['repososPendientesQuery' => $request->input('repososPendientesQuery')]);
+
+        return view('gestion.resultados_busqueda', compact('reposos'));
     }
 
     public function aprobarReposo($id)
