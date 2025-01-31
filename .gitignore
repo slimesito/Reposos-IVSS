@@ -22,6 +22,7 @@ yarn-error.log
 /app/Models/AseguradoEmpresa.php
 /app/Models/Capitulo.php
 /app/Models/CentroAsistencial.php
+/app/Models/Ciudadano.php
 /app/Models/Expediente.php
 /app/Models/Forma_14144.php
 /app/Models/Lugar.php
