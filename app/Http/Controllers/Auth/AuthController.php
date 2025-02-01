@@ -20,7 +20,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required',
+            'email' => 'required|email',
             'password' => 'required',
         ]);
 
@@ -55,6 +55,7 @@ class AuthController extends Controller
             // Registrar la IP del usuario y el rango IP del centro asistencial para depuración
             Log::info('IP del usuario: ' . $userIp . ' | Prefijo IP del usuario: ' . $userIpPrefix);
             Log::info('Rango IP del centro asistencial: ' . $rangoIp);
+            Log::info('Comparando userIpPrefix: ' . $userIpPrefix . ' con rangoIp: ' . $rangoIp);
 
             if ($userIpPrefix !== $rangoIp) {
                 return back()->withErrors([

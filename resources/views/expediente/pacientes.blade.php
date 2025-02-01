@@ -22,22 +22,22 @@
                         <th>Cantidad de Prórrogas</th>
                         <th>Días Acumulados</th>
                         <th>Último Centro Asistencial</th>
-                        <th>Último Reposo</th>
-                        <th>Fecha de Creación</th>
-                        <th>Fecha de Actualización</th>
+                        <th>ID Último Reposo</th>
+                        <th>Fecha Registro</th>
+                        <th>Fecha Actualización</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($expedientes as $expediente)
                         <tr>
-                            <td>{{ $expediente->cedula }}</td>
+                            <td>{{ $expediente->cedula_formateada }}</td>
                             <td>{{ $expediente->cantidad_reposos }}</td>
                             <td>{{ $expediente->cantidad_prorrogas }}</td>
                             <td>{{ $expediente->dias_acumulados }}</td>
                             <td>{{ $expediente->ultimoCentroAsistencial->nombre ?? 'N/A' }}</td>
                             <td>{{ $expediente->id_ultimo_reposo }}</td>
-                            <td>{{ $expediente->fecha_create }}</td>
-                            <td>{{ $expediente->fecha_update }}</td>
+                            <td>{{ \Carbon\Carbon::parse($expediente->fecha_create)->format('d/m/Y h:i A') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($expediente->fecha_update)->format('d/m/Y h:i A') }}</td>
                         </tr>
                     @endforeach
                 </tbody>

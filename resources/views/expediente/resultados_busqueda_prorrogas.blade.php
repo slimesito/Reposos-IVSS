@@ -28,12 +28,12 @@
                 <tbody>
                     @foreach($prorrogas as $prorroga)
                         <tr>
-                            <td>{{ $prorroga->cedula }}</td>
+                            <td>{{ $prorroga->cedula_formateada }}</td>
                             <td>{{ $prorroga->servicio->nombre }}</td>
                             <td>{{ $prorroga->capitulo->descripcion }}</td>
                             <td>{{ $prorroga->patologiaGeneral->descripcion }}</td>
                             <td>{{ $prorroga->patologiaEspecifica->descripcion ?? 'N/A' }}</td>
-                            <td>{{ $prorroga->fecha_create }}</td>
+                            <td>{{ \Carbon\Carbon::parse($prorroga->fecha_create)->format('d/m/Y h:i A') }}</td>
                         </tr>
                     @endforeach
                 </tbody>

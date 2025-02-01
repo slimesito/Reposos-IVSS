@@ -42,7 +42,7 @@ class CentrosAsistencialesController extends Controller
             'cod_estado' => 'required|numeric|max:19',
             'es_hospital' => 'required|boolean',
             'cod_tipo' => 'required|numeric|max:19',
-            'nro_reposo_1473' => 'required|numeric|max:19',
+            'nro_reposo_1473' => 'required|numeric',
             'rango_ip' => 'required|max:11',
         ]);
 

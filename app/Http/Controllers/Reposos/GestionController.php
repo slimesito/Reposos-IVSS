@@ -12,7 +12,19 @@ class GestionController extends Controller
 {
     public function gestionRepososView()
     {
-        $reposos = Reposo::with('servicio', 'capitulo', )->where('cod_estatus', 3)->paginate(10);
+        $reposos = Reposo::with('servicio', 'capitulo')->where('cod_estatus', 3)->paginate(10);
+
+        // Formatear la cédula en el controlador
+        foreach ($reposos as $reposo) {
+            $cedula = ltrim(substr($reposo->cedula, 1), '0');
+            $prefix = substr($reposo->cedula, 0, 1);
+            if ($prefix == '1') {
+                $prefix = 'V';
+            } elseif ($prefix == '2') {
+                $prefix = 'E';
+            }
+            $reposo->cedula_formateada = $prefix . '-' . $cedula;
+        }
 
         return view('gestion.reposos', compact('reposos'));
     }
@@ -24,6 +36,18 @@ class GestionController extends Controller
         $reposos = Reposo::where('cedula', 'LIKE', '%' . $query . '%')
             ->paginate(20)
             ->appends(['repososPendientesQuery' => $request->input('repososPendientesQuery')]);
+
+        // Formatear la cédula en el controlador
+        foreach ($reposos as $reposo) {
+            $cedula = ltrim(substr($reposo->cedula, 1), '0');
+            $prefix = substr($reposo->cedula, 0, 1);
+            if ($prefix == '1') {
+                $prefix = 'V';
+            } elseif ($prefix == '2') {
+                $prefix = 'E';
+            }
+            $reposo->cedula_formateada = $prefix . '-' . $cedula;
+        }
 
         return view('gestion.resultados_busqueda', compact('reposos'));
     }

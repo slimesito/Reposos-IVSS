@@ -21,7 +21,7 @@ class CapitulosController extends Controller
     {
         $query = StringHelpers::strtoupper_searchCapitulos($request->input('capitulosQuery'));
 
-        $capitulos = Capitulo::where('capitulo_id', $query)
+        $capitulos = Capitulo::where('descripcion', 'LIKE', '%' . $query . '%')
             ->paginate(10)
             ->appends(['capitulosQuery' => $request->input('capitulosQuery')]);
 

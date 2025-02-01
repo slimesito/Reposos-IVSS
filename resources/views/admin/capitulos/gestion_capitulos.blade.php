@@ -41,14 +41,14 @@
                                     <form action="{{ route('editar.capitulos.view', $capitulo->id) }}" method="GET">
                                         @csrf
                                         <input type="hidden" name="_method">
-                                        <button type="submit" class="btn btn-warning">Editar</button>
+                                        <button type="submit" class="btn btn-warning rounded-pill m-2">Editar</button>
                                     </form>
                                 
                                     <!-- Botón para eliminar -->
                                     <form id="delete-form-Capítulo-{{ $capitulo->id }}" action="{{ route('destroy.capitulos', $capitulo->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn btn-danger" onclick="confirmDelete({{ $capitulo->id }}, 'Capítulo')">Eliminar</button>
+                                        <button type="button" class="btn btn-danger rounded-pill m-2" onclick="confirmDelete({{ $capitulo->id }}, 'Capítulo')">Eliminar</button>
                                     </form>
                                 </div>
                             </td>

@@ -15,6 +15,18 @@ class ExpedienteController extends Controller
     {
         $expedientes = Expediente::paginate(20);
 
+        // Formatear la cédula en el controlador
+        foreach ($expedientes as $expediente) {
+            $cedula = ltrim(substr($expediente->cedula, 1), '0');
+            $prefix = substr($expediente->cedula, 0, 1);
+            if ($prefix == '1') {
+                $prefix = 'V';
+            } elseif ($prefix == '2') {
+                $prefix = 'E';
+            }
+            $expediente->cedula_formateada = $prefix . '-' . $cedula;
+        }
+
         return view('expediente.pacientes', compact('expedientes'));
     }
 
@@ -25,6 +37,18 @@ class ExpedienteController extends Controller
         $expedientes = Expediente::where('cedula', 'LIKE', "%{$query}%")
             ->paginate(10)
             ->appends(['pacientesQuery' => $request->input('pacientesQuery')]);
+
+        // Formatear la cédula en el controlador
+        foreach ($expedientes as $expediente) {
+            $cedula = ltrim(substr($expediente->cedula, 1), '0');
+            $prefix = substr($expediente->cedula, 0, 1);
+            if ($prefix == '1') {
+                $prefix = 'V';
+            } elseif ($prefix == '2') {
+                $prefix = 'E';
+            }
+            $expediente->cedula_formateada = $prefix . '-' . $cedula;
+        }
 
         return view('expediente.resultados_busqueda_pacientes', compact('expedientes'));
     }
@@ -115,6 +139,18 @@ class ExpedienteController extends Controller
             $prorrogas = Prorroga::where('id_cent_asist', $user->id_centro_asistencial)->paginate(20);
         }
 
+        // Formatear la cédula en el controlador
+        foreach ($prorrogas as $prorroga) {
+            $cedula = ltrim(substr($prorroga->cedula, 1), '0');
+            $prefix = substr($prorroga->cedula, 0, 1);
+            if ($prefix == '1') {
+                $prefix = 'V';
+            } elseif ($prefix == '2') {
+                $prefix = 'E';
+            }
+            $prorroga->cedula_formateada = $prefix . '-' . $cedula;
+        }
+
         return view('expediente.prorrogas', compact('prorrogas'));
     }
 
@@ -131,7 +167,21 @@ class ExpedienteController extends Controller
         }
 
         // Filtrar por cédula y paginar el resultado
-        $prorrogas = $prorrogas->where('cedula', 'LIKE', "%{$query}%")->paginate(10)->appends(['prorrogasQuery' => $query]);
+        $prorrogas = $prorrogas->where('cedula', 'LIKE', "%{$query}%")
+                                ->paginate(10)
+                                ->appends(['prorrogasQuery' => $query]);
+        
+        // Formatear la cédula en el controlador
+        foreach ($prorrogas as $prorroga) {
+            $cedula = ltrim(substr($prorroga->cedula, 1), '0');
+            $prefix = substr($prorroga->cedula, 0, 1);
+            if ($prefix == '1') {
+                $prefix = 'V';
+            } elseif ($prefix == '2') {
+                $prefix = 'E';
+            }
+            $prorroga->cedula_formateada = $prefix . '-' . $cedula;
+        }
 
         return view('expediente.resultados_busqueda_prorrogas', compact('prorrogas'));
     }

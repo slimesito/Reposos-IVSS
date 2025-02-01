@@ -34,7 +34,13 @@
                             <td>{{ $centroAsistencial->cod_centro }}</td>
                             <td>{{ $centroAsistencial->nombre }}</td>
                             <td>{{ $centroAsistencial->cod_estado }}</td>
-                            <td>{{ $centroAsistencial->es_hospital }}</td>
+                            <td>
+                                @if($centroAsistencial->es_hospital)
+                                    Sí
+                                @else
+                                    No
+                                @endif
+                            </td>
                             <td>{{ $centroAsistencial->cod_tipo }}</td>
                             <td>{{ $centroAsistencial->nro_reposo_1473 }}</td>
                             <td>{{ $centroAsistencial->rango_ip }}</td>
@@ -51,14 +57,14 @@
                                     <form action="{{ route('editar.centro-asistencial.view', $centroAsistencial->id) }}" method="GET">
                                         @csrf
                                         <input type="hidden" name="_method">
-                                        <button type="submit" class="btn btn-warning">Editar</button>
+                                        <button type="submit" class="btn btn-warning rounded-pill m-2">Editar</button>
                                     </form>
                                 
                                     <!-- Botón para eliminar -->
                                     <form id="delete-form-Centro Asistencial-{{ $centroAsistencial->id }}" action="{{ route('destroy.centro-asistencial', $centroAsistencial->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn btn-danger" onclick="confirmDelete({{ $centroAsistencial->id }}, 'Centro Asistencial')">Eliminar</button>
+                                        <button type="button" class="btn btn-danger rounded-pill m-2" onclick="confirmDelete({{ $centroAsistencial->id }}, 'Centro Asistencial')">Eliminar</button>
                                     </form>
                                 </div>
                             </td>

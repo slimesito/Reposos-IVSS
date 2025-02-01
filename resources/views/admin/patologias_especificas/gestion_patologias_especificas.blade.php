@@ -49,14 +49,14 @@
                                     <form action="{{ route('editar.patologia-especifica.view', $patologiaEspecifica->id) }}" method="GET">
                                         @csrf
                                         <input type="hidden" name="_method">
-                                        <button type="submit" class="btn btn-warning">Editar</button>
+                                        <button type="submit" class="btn btn-warning rounded-pill m-2">Editar</button>
                                     </form>
                                 
                                     <!-- Botón para eliminar -->
                                     <form id="delete-form-Patología Específica-{{ $patologiaEspecifica->id }}" action="{{ route('destroy.patologia-especifica', $patologiaEspecifica->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn btn-danger" onclick="confirmDelete({{ $patologiaEspecifica->id }}, 'Patología Específica')">Eliminar</button>
+                                        <button type="button" class="btn btn-danger rounded-pill m-2" onclick="confirmDelete({{ $patologiaEspecifica->id }}, 'Patología Específica')">Eliminar</button>
                                     </form>
                                 </div>
                             </td>

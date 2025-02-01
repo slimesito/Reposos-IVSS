@@ -51,14 +51,14 @@
                                     <form action="{{ route('editar.servicio.view', $servicio->id) }}" method="GET">
                                         @csrf
                                         <input type="hidden" name="_method">
-                                        <button type="submit" class="btn btn-warning">Editar</button>
+                                        <button type="submit" class="btn btn-warning rounded-pill m-2">Editar</button>
                                     </form>
                                 
                                     <!-- Botón para eliminar -->
                                     <form id="delete-form-Servicio-{{ $servicio->id }}" action="{{ route('destroy.servicio', $servicio->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn btn-danger" onclick="confirmDelete({{ $servicio->id }}, 'Servicio')">Eliminar</button>
+                                        <button type="button" class="btn btn-danger rounded-pill m-2" onclick="confirmDelete({{ $servicio->id }}, 'Servicio')">Eliminar</button>
                                     </form>
                                     
                                 </div>

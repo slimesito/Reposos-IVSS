@@ -27,7 +27,7 @@
                 <tbody>
                     @foreach($reposos as $reposo)
                         <tr>
-                            <td>{{ $reposo->cedula }}</td>
+                            <td>{{ $reposo->cedula_formateada }}</td>
                             <td>{{ $reposo->servicio->nombre ?? 'N/A' }}</td>
                             <td>{{ $reposo->capitulo->descripcion ?? 'N/A' }}</td>
                             <td>{{ \Carbon\Carbon::parse($reposo->fecha_create)->format('d-m-Y') }}</td>
