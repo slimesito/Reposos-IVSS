@@ -25,8 +25,8 @@
     <link href="{!! asset('assets/fontawesome/css/solid.css') !!}" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
-    <link href="{!! asset('lib/owlcarousel/assets/owl.carousel.min.css') !!}" rel="stylesheet">
-    <link href="{!! asset('lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css') !!}" rel="stylesheet" />
+    <link href="{!! asset('app/lib/owlcarousel/assets/owl.carousel.min.css') !!}" rel="stylesheet">
+    <link href="{!! asset('app/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css') !!}" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{!! asset('app/css/bootstrap.min.css') !!}" rel="stylesheet">
@@ -137,7 +137,9 @@
                     <div class="nav-item dropdown">
                         <a href="" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-solid fa-address-book me-2"></i>Expedientes</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                            <a href="{{ route('expediente.pacientes.view') }}" class="dropdown-item">Pacientes registrados</a>
+                            @if (Auth::check() && Auth::user()->cod_cargo == 4)
+                                <a href="{{ route('expediente.pacientes.view') }}" class="dropdown-item">Pacientes registrados</a>
+                            @endif
                             <a href="{{ route('reposos.registrados.view') }}" class="dropdown-item">Reposos registrados</a>
                             <a href="{{ route('prorrogas.registradas.view') }}" class="dropdown-item">Prórrogas registradas</a>
                         </div>

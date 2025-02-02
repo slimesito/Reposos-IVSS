@@ -22,7 +22,8 @@ class CheckUserProfile
         $userId = $request->route('id');
 
         if ($user->id != $userId) {
-            return response()->view('layout.alerts.error404');
+            // Devuelve una vista específica de error
+            return response()->view('layout.alerts.error404', [], 404);
         }
 
         return $next($request);

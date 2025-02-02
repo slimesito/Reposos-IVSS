@@ -17,6 +17,6 @@ class EnsureUserIsAdmin
         }
 
         // Si no es administrador, redirige al usuario a donde consideres apropiado
-        return redirect('layout.alerts.error404');
+        return redirect()->route('error404');
     }
 }

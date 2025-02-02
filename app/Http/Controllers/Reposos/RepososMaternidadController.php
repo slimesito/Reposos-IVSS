@@ -198,6 +198,17 @@ class RepososMaternidadController extends Controller
                     'pago_factura' => 'N',
                 ]);
 
+                // Formatear la cédula para el PDF
+                $cedula = $reposo->cedula;
+                $formattedCedula = ltrim(substr($cedula, 1), '0'); // Eliminar ceros de relleno
+                $prefix = substr($cedula, 0, 1);
+                if ($prefix == '1') {
+                    $prefix = 'V';
+                } elseif ($prefix == '2') {
+                    $prefix = 'E';
+                }
+                $cedulaFormateada = $prefix . '-' . $formattedCedula;
+
                 // Generar PDF
                 $data = [
                     'reposo' => $reposo,
@@ -205,6 +216,7 @@ class RepososMaternidadController extends Controller
                     'aseguradoEmpresa' => $aseguradoEmpresa,
                     'ciudadano' => $ciudadano, // Agregar los datos del ciudadano a la data
                     'usuario' => $usuario, // Pasar el usuario autenticado a la vista
+                    'cedula_formateada' => $cedulaFormateada, // Pasar la cédula formateada a la vista
                     'fecha_elaboracion' => now()->format('d/m/Y'),
                 ];
 

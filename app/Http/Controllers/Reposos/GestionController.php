@@ -12,7 +12,15 @@ class GestionController extends Controller
 {
     public function gestionRepososView()
     {
-        $reposos = Reposo::with('servicio', 'capitulo')->where('cod_estatus', 3)->paginate(10);
+        $user = auth()->user();
+
+        if ($user->cod_cargo == 4) {
+            $reposos = Reposo::with('servicio', 'capitulo')->where('cod_estatus', 3)->paginate(10);
+        } else {
+            $reposos = Reposo::where('id_cent_asist', $user->id_centro_asistencial)
+                            ->orderBy('fecha_create', 'desc')
+                                            ->paginate(20);
+        }
 
         // Formatear la cédula en el controlador
         foreach ($reposos as $reposo) {
@@ -32,10 +40,21 @@ class GestionController extends Controller
     public function buscadorRepososPendientes(Request $request)
     {
         $query = StringHelpers::strtoupper_searchRepososPendientes($request->input('repososPendientesQuery'));
+        $user = auth()->user();
 
-        $reposos = Reposo::where('cedula', 'LIKE', '%' . $query . '%')
-            ->paginate(20)
-            ->appends(['repososPendientesQuery' => $request->input('repososPendientesQuery')]);
+        if ($user->cod_cargo == 4) {
+            $reposos = Reposo::with('servicio', 'capitulo')
+                            ->where('cedula', 'LIKE', '%' . $query . '%')
+                            ->where('cod_estatus', 3)
+                            ->paginate(10)
+                            ->appends(['repososPendientesQuery' => $request->input('repososPendientesQuery')]);
+        } else {
+            $reposos = Reposo::where('id_cent_asist', $user->id_centro_asistencial)
+                            ->where('cedula', 'LIKE', '%' . $query . '%')
+                            ->orderBy('fecha_create', 'desc')
+                            ->paginate(20)
+                            ->appends(['repososPendientesQuery' => $request->input('repososPendientesQuery')]);
+        }
 
         // Formatear la cédula en el controlador
         foreach ($reposos as $reposo) {

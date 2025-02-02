@@ -7,11 +7,20 @@ document.addEventListener('DOMContentLoaded', function() {
         patGeneralSelect.innerHTML = '<option hidden selected disabled>Seleccione la Patología General</option>';
 
         fetch(`/getPatologiasGenerales/${this.value}`)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json();
+            })
             .then(data => {
+                console.log(data); // Añade esto para ver los datos en la consola
                 data.forEach(patologia => {
                     patGeneralSelect.innerHTML += `<option value="${patologia.id}">${patologia.descripcion}</option>`;
                 });
+            })
+            .catch(error => {
+                console.error('Error al cargar las patologías generales:', error);
             });
     });
 });

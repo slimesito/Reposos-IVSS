@@ -26,17 +26,14 @@
             </div>
 
             <div class="mb-3">
-
                 <label for="id_pat_general" class="form-label">Patología General:</label>
-
                 <select name="id_pat_general" class="form-select mb-3" id="id_pat_general" aria-label="Seleccione la Patología General">
                     <option hidden selected disabled>Seleccione la Patología General</option>
                     @foreach($patologiasGenerales as $patologiaGeneral)
                         <option value="{{ $patologiaGeneral->id }}">{{ $patologiaGeneral->descripcion }}</option>
                     @endforeach
                 </select>
-
-            </div>
+            </div>            
 
             <div class="mb-3">
 
@@ -85,17 +82,17 @@
 
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Inicio del Reposo:</label>
-                <input type="date" name="inicio_reposo" class="form-control" id="inicio_reposo" aria-describedby="emailHelp" required>
+                <input type="date" name="inicio_reposo" min="{{ date('Y-m-d') }}" class="form-control" id="inicio_reposo" aria-describedby="emailHelp" required>
             </div>
 
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Fin del Reposo:</label>
-                <input type="date" name="fin_reposo" class="form-control" id="fin_reposo" aria-describedby="emailHelp" required>
+                <input type="date" name="fin_reposo" min="{{ date('Y-m-d') }}" class="form-control" id="fin_reposo" aria-describedby="emailHelp" required>
             </div>
 
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Reintegro:</label>
-                <input type="date" name="reintegro" class="form-control" id="reintegro" aria-describedby="emailHelp" required>
+                <input type="date" name="reintegro" min="{{ date('Y-m-d') }}" class="form-control" id="reintegro" aria-describedby="emailHelp" required>
             </div>
 
             <div class="mb-3">

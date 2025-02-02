@@ -62,7 +62,19 @@ class RepososEnfermedadController extends Controller
         $patologiasEspecificas = PatologiaEspecifica::all();
         $lugares = Lugar::all();
         $motivos = Motivo::all();
+
+        // Añade un registro de depuración
+        Log::info('Patologías Generales:', ['patologiasGenerales' => $patologiasGenerales]);
+
         return view('reposos.nuevo_reposo_enfermedad', compact('servicios', 'capitulos', 'patologiasGenerales', 'patologiasEspecificas', 'lugares', 'motivos'));
+    }
+
+    public function getPatologiasGenerales($id)
+    {
+        $patologiasGenerales = PatologiaGeneral::where('capitulo_id', $id)->get();
+        
+        // Asegúrate de devolver JSON
+        return response()->json($patologiasGenerales);
     }
 
     public function createReposoEnfermedad(Request $request)
@@ -200,7 +212,7 @@ class RepososEnfermedadController extends Controller
                     'pago_factura' => 'N',
                 ]);
 
-                 // Formatear la cédula para el PDF
+                // Formatear la cédula para el PDF
                 $cedula = $reposo->cedula;
                 $formattedCedula = ltrim(substr($cedula, 1), '0'); // Eliminar ceros de relleno
                 $prefix = substr($cedula, 0, 1);
