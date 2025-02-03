@@ -61,7 +61,19 @@ class RepososMaternidadController extends Controller
         $patologiasEspecificas = PatologiaEspecifica::where('capitulo_id', 16)->get();
         $lugares = Lugar::all();
         $motivos = Motivo::all();
-        return view('reposos.nuevo_reposo_maternidad', compact('servicios', 'capitulos', 'patologiasGenerales', 'patologiasEspecificas', 'lugares', 'motivos'));
+
+        // Añade un registro de depuración
+        Log::info('Patologías Generales:', ['patologiasGenerales' => $patologiasGenerales]);
+
+        return view('reposos.nuevo_reposo_enfermedad', compact('servicios', 'capitulos', 'patologiasGenerales', 'patologiasEspecificas', 'lugares', 'motivos'));
+    }
+
+    public function getPatologiasGenerales($id)
+    {
+        $patologiasGenerales = PatologiaGeneral::where('capitulo_id', $id)->get();
+        
+        // Asegúrate de devolver JSON
+        return response()->json($patologiasGenerales);
     }
 
     public function createReposoMaternidad(Request $request)
@@ -138,6 +150,15 @@ class RepososMaternidadController extends Controller
                 $inicioReposo = Carbon::parse($request->inicio_reposo);
                 $finReposo = Carbon::parse($request->fin_reposo);
                 $diasIndemnizar = $inicioReposo->diffInDays($finReposo) + 1; // +1 para incluir el día de inicio
+
+                // Obtener los días de reposo de la patología general
+                $patologiaGeneral = PatologiaGeneral::findOrFail($request->id_pat_general);
+                $diasReposo = $patologiaGeneral->dias_reposo;
+
+                // Validar que los días a indemnizar no sean mayores que los días de reposo
+                if ($diasIndemnizar > $diasReposo) {
+                    return redirect()->back()->with('error', 'Los días a indemnizar no pueden ser mayores que los días de reposo de la patología general seleccionada.');
+                }
 
                 // Crear el reposo
                 $reposo = Reposo::create([

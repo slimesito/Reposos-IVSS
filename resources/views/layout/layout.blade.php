@@ -307,6 +307,9 @@
     <!-- Incluir el archivo JavaScript -->
     <script src="{!! asset('assets/js/backToTop.js') !!}"></script>
 
+    <!-- Input para Días a Indemnizar -->
+    <script src="{{ asset('assets/js/calculoDiasIndemnizar.js') }}"></script>
+
     <!-- Template Javascript -->
     <script src="{!! asset('app/js/main.js') !!}"></script>
 </body>

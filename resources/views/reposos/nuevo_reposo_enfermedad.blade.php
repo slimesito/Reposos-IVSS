@@ -81,22 +81,22 @@
             </div>
 
             <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Inicio del Reposo:</label>
-                <input type="date" name="inicio_reposo" min="{{ date('Y-m-d') }}" class="form-control" id="inicio_reposo" aria-describedby="emailHelp" required>
+                <label for="inicio_reposo" class="form-label">Inicio del Reposo:</label>
+                <input type="date" name="inicio_reposo" min="{{ date('Y-m-d') }}" class="form-control" id="inicio_reposo" required>
             </div>
 
             <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Fin del Reposo:</label>
-                <input type="date" name="fin_reposo" min="{{ date('Y-m-d') }}" class="form-control" id="fin_reposo" aria-describedby="emailHelp" required>
+                <label for="fin_reposo" class="form-label">Fin del Reposo:</label>
+                <input type="date" name="fin_reposo" min="{{ date('Y-m-d') }}" class="form-control" id="fin_reposo" required>
             </div>
 
             <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Reintegro:</label>
-                <input type="date" name="reintegro" min="{{ date('Y-m-d') }}" class="form-control" id="reintegro" aria-describedby="emailHelp" required>
+                <label for="reintegro" class="form-label">Reintegro:</label>
+                <input type="date" name="reintegro" min="{{ date('Y-m-d') }}" class="form-control" id="reintegro" required>
             </div>
 
             <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">¿Debe volver?:</label>
+                <label for="debe_volver" class="form-label">¿Debe volver?:</label>
                 <select name="debe_volver" placeholder="Seleccione:" class="form-select mb-3" aria-label="Default select example">
                     <option disabled hidden selected>Seleccione:</option>
                     <option value="1">Sí</option>
@@ -105,13 +105,19 @@
             </div>
 
             <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Correo Electrónico del Trabajador:</label>
-                <input type="text" name="email_trabajador" class="form-control" id="email_trabajador" aria-describedby="emailHelp" required>
+                <label for="email_trabajador" class="form-label">Correo Electrónico del Trabajador:</label>
+                <input type="text" name="email_trabajador" class="form-control" id="email_trabajador" required>
             </div>
 
             <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Observaciones:</label>
-                <input type="text" name="observaciones" class="form-control" id="observaciones" aria-describedby="emailHelp">
+                <label for="observaciones" class="form-label">Observaciones:</label>
+                <input type="text" name="observaciones" class="form-control" id="observaciones">
+            </div>
+
+            <!-- Campo deshabilitado para mostrar días a indemnizar -->
+            <div class="mb-3">
+                <label for="dias_indemnizar" class="form-label">Días a Indemnizar:</label>
+                <input type="text" name="dias_indemnizar" class="form-control" id="dias_indemnizar" disabled>
             </div>
             
             <button class="btn btn-lg btn-primary m-2">Registrar</button>

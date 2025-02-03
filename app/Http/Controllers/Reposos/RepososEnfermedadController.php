@@ -152,6 +152,15 @@ class RepososEnfermedadController extends Controller
                 $finReposo = Carbon::parse($request->fin_reposo);
                 $diasIndemnizar = $inicioReposo->diffInDays($finReposo) + 1; // +1 para incluir el día de inicio
 
+                // Obtener los días de reposo de la patología general
+                $patologiaGeneral = PatologiaGeneral::findOrFail($request->id_pat_general);
+                $diasReposo = $patologiaGeneral->dias_reposo;
+
+                // Validar que los días a indemnizar no sean mayores que los días de reposo
+                if ($diasIndemnizar > $diasReposo) {
+                    return redirect()->back()->with('error', 'Los días a indemnizar no pueden ser mayores que los días de reposo de la patología general seleccionada.');
+                }
+
                 $salarioDiario = $salarioMensual / 30; // Suponiendo un mes de 30 días
 
                 $reposo = Reposo::create([
