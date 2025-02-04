@@ -94,17 +94,17 @@
 
             <div class="mb-3">
                 <label for="inicio_reposo" class="form-label">Inicio del Reposo:</label>
-                <input type="date" name="inicio_reposo" min="{{ date('Y-m-d') }}" class="form-control" id="inicio_reposo" required>
+                <input type="date" name="inicio_reposo" class="form-control" id="inicio_reposo" required>
             </div>
 
             <div class="mb-3">
                 <label for="fin_reposo" class="form-label">Fin del Reposo:</label>
-                <input type="date" name="fin_reposo" min="{{ date('Y-m-d') }}" class="form-control" id="fin_reposo" required>
+                <input type="date" name="fin_reposo" class="form-control" id="fin_reposo" required>
             </div>
 
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Reintegro:</label>
-                <input type="date" name="reintegro" min="{{ date('Y-m-d') }}" class="form-control" id="reintegro" aria-describedby="emailHelp" required>
+                <input type="date" name="reintegro" class="form-control" id="reintegro" aria-describedby="emailHelp" required>
             </div>
 
             <div class="mb-3">

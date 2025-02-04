@@ -58,9 +58,12 @@ class ExpedienteController extends Controller
         $user = auth()->user();
         
         if ($user->cod_cargo == 4) {
-            $reposos = Reposo::orderBy('fecha_create', 'desc')->paginate(20);
+            $reposos = Reposo::where('convalidado', 1)
+                            ->orderBy('fecha_create', 'desc')
+                            ->paginate(20);
         } else {
             $reposos = Reposo::where('id_cent_asist', $user->id_centro_asistencial)
+                            ->where('convalidado', 1)
                             ->orderBy('fecha_create', 'desc')
                             ->paginate(20);
         }
@@ -84,17 +87,18 @@ class ExpedienteController extends Controller
     {
         $user = auth()->user();
         $query = $request->input('repososQuery');
-    
+
         $reposos = Reposo::query();
-    
+
         if ($user->cod_cargo != 4) {
             $reposos->where('id_cent_asist', $user->id_centro_asistencial);
         }
-    
+
         $reposos = $reposos->where('cedula', 'LIKE', "%{$query}%")
-                           ->orderBy('fecha_create', 'desc')
-                           ->paginate(10)
-                           ->appends(['repososQuery' => $query]);
+                        ->where('convalidado', 1)
+                        ->orderBy('fecha_create', 'desc')
+                        ->paginate(10)
+                        ->appends(['repososQuery' => $query]);
 
         // Formatear la cédula en el controlador
         foreach ($reposos as $reposo) {
@@ -107,7 +111,7 @@ class ExpedienteController extends Controller
             }
             $reposo->cedula_formateada = $prefix . '-' . $cedula;
         }
-    
+
         return view('expediente.resultados_busqueda_reposos', compact('reposos'));
     }
 

@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'Resultados Búsqueda')
+@section('title', 'Gestión de Servicios')
 
 @section('content')
 
@@ -17,7 +17,7 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th scope="col">Código Servicio</th>
+                        <th scope="col">Código</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Tiempo Cita</th>
                         <th scope="col">¿Autoriza Maternidad?</th>
@@ -51,14 +51,14 @@
                                     <form action="{{ route('editar.servicio.view', $servicio->id) }}" method="GET">
                                         @csrf
                                         <input type="hidden" name="_method">
-                                        <button type="submit" class="btn btn-warning rounded-pill m-2">Editar</button>
+                                        <button type="submit" class="btn btn-warning rounded-pill m-2"><i class="fa-solid fa-pen-to-square" title="Editar"></i></button>
                                     </form>
                                 
                                     <!-- Botón para eliminar -->
                                     <form id="delete-form-Servicio-{{ $servicio->id }}" action="{{ route('destroy.servicio', $servicio->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn btn-danger rounded-pill m-2" onclick="confirmDelete({{ $servicio->id }}, 'Servicio')">Eliminar</button>
+                                        <button type="button" class="btn btn-danger rounded-pill m-2" onclick="confirmDelete({{ $servicio->id }}, 'Servicio')"><i class="fa-regular fa-trash-can" title="Eliminar"></i></button>
                                     </form>
                                     
                                 </div>

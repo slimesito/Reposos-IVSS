@@ -83,4 +83,9 @@ class StringHelpers
     {
         return strtoupper($string);
     }
+
+    public static function strtoupper_createUsers($string)
+    {
+        return strtoupper($string);
+    }
 }

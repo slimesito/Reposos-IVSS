@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helpers\StringHelpers;
 use App\Http\Controllers\Controller;
+use App\Models\Capitulo;
 use App\Models\PatologiaGeneral;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +14,7 @@ class PatologiasGeneralesController extends Controller
 {
     public function gestionPatologiasGeneralesView()
     {
-        $patologiasGenerales = PatologiaGeneral::orderBy('pat_general_id')->paginate(30);
+        $patologiasGenerales = PatologiaGeneral::with('capitulo')->orderBy('pat_general_id')->paginate(20);
 
         return view('admin.patologias_generales.gestion_patologias_generales', ['patologiasGenerales' => $patologiasGenerales]);
     }
@@ -22,7 +23,8 @@ class PatologiasGeneralesController extends Controller
     {
         $query = StringHelpers::strtoupper_searchPatologiaGeneral($request->input('patologiaGeneralQuery'));
 
-        $patologiasGenerales = PatologiaGeneral::where('descripcion', 'LIKE', '%' . $query . '%')
+        $patologiasGenerales = PatologiaGeneral::with('capitulo')
+            ->where('descripcion', 'LIKE', '%' . $query . '%')
             ->paginate(10)
             ->appends(['patologiaGeneralQuery' => $request->input('patologiaGeneralQuery')]);
 
@@ -31,25 +33,24 @@ class PatologiasGeneralesController extends Controller
 
     public function createPatologiasGeneralesView()
     {
-        return view('admin.patologias_generales.nueva_patologia_general');
+        $capitulos = Capitulo::all();
+        return view('admin.patologias_generales.nueva_patologia_general', compact('capitulos'));
     }
 
     public function createPatologiasGenerales(Request $request)
     {
         $request->validate([
             'pat_general_id' => 'required|max:10|unique:patologias_generales,pat_general_id',
-            'capitulo_id' => 'required|numeric|max:19',
+            'capitulo_id' => 'required|numeric',
             'descripcion' => 'required|max:250|unique:patologias_generales,descripcion',
             'dias_reposo' => 'required|numeric',
         ]);
 
         try {
-            // Obtener el siguiente valor de la secuencia para el campo id
-            $nextId = DB::selectOne("SELECT BDSAIVSSID.PATOLOGIAS_GENERALES_ID_SEQ.NEXTVAL as id FROM dual")->id;
+            $maxId = DB::table('patologias_generales')->max('id');
 
-            // Luego realiza la inserción
             PatologiaGeneral::create([
-                'id' => $nextId,
+                'id' => $maxId + 1,
                 'pat_general_id' => StringHelpers::strtoupper_createPatologiaGeneral($request->pat_general_id),
                 'capitulo_id' => $request->capitulo_id,
                 'descripcion' => StringHelpers::strtoupper_createPatologiaGeneral($request->descripcion),
@@ -69,8 +70,9 @@ class PatologiasGeneralesController extends Controller
 
     public function editarPatologiasGeneralesView($id)
     {
+        $capitulos = Capitulo::all();
         $patologiaGeneral = PatologiaGeneral::findOrFail($id);
-        return view('admin.patologias_generales.editar_patologias_generales', compact('patologiaGeneral'));
+        return view('admin.patologias_generales.editar_patologias_generales', compact('patologiaGeneral', 'capitulos'));
     }
 
     public function updatePatologiasGenerales(Request $request, $id)
@@ -79,7 +81,7 @@ class PatologiasGeneralesController extends Controller
 
         $request->validate([
             'pat_general_id' => 'required|max:10|unique:patologias_generales,pat_general_id,' . $patologiaGeneral->id,
-            'capitulo_id' => 'required|numeric|max:10',
+            'capitulo_id' => 'required|numeric',
             'descripcion' => 'required|max:250|unique:patologias_generales,descripcion,' . $patologiaGeneral->id, // Aquí incluimos el ID
             'dias_reposo' => 'required|numeric',
             'activo' => 'required|boolean',

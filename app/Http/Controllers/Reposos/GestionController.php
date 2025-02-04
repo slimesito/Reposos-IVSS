@@ -75,6 +75,7 @@ class GestionController extends Controller
     {
         $reposo = Reposo::findOrFail($id);
         $reposo->cod_estatus = 1;
+        $reposo->convalidado = 1;
         $reposo->id_validacion = auth()->user()->id;
         $reposo->fecha_validacion = now();
         $reposo->save();

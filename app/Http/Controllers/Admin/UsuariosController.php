@@ -90,9 +90,10 @@ class UsuariosController extends Controller
 
         try {
 
-            $nextId = DB::selectOne("SELECT BDSAIVSSID.USERS_ID_SEQ.NEXTVAL as id FROM dual")->id;
+            $maxId = DB::table('users')->max('id');
 
             User::create([
+                'id' => $maxId + 1,
                 'nombres' => $request->nombres,
                 'apellidos' => $request->apellidos,
                 'cedula' => $request->cedula,

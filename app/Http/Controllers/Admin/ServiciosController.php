@@ -44,12 +44,10 @@ class ServiciosController extends Controller
         ]);
 
         try {
-            // Obtener el siguiente valor de la secuencia para el campo id
-            $nextId = DB::selectOne("SELECT BDSAIVSSID.SERVICIOS_ID_SEQ.NEXTVAL as id FROM dual")->id;
+            $maxId = DB::table('servicios')->max('id');
 
-            // Crear el nuevo registro
             Servicio::create([
-                'id' => $nextId,
+                'id' => $maxId + 1,
                 'cod_servicio' => $request->cod_servicio,
                 'nombre' => StringHelpers::strtoupper_createServicio($request->nombre),
                 'tiempo_cita' => $request->tiempo_cita,
@@ -77,39 +75,22 @@ class ServiciosController extends Controller
     {
         $servicio = Servicio::findOrFail($id);
 
-        $rules = [
+        $request->validate([
+            'cod_servicio' => 'required|numeric',
+            'nombre' => 'required|max:250',
             'tiempo_cita' => 'required|numeric',
             'autoriza_maternidad' => 'required|boolean',
             'activo' => 'required|boolean',
-        ];
+        ]);        
 
-        // Validación condicional para cod_servicio
-        if ($request->input('cod_servicio') !== $servicio->cod_servicio) {
-            $rules['cod_servicio'] = 'required|numeric|unique:servicios';
-        }
-
-        // Validación condicional para nombre
-        if (StringHelpers::strtoupper_updateServicio($request->input('nombre')) !== $servicio->nombre) {
-            $rules['nombre'] = 'required|max:250|unique:servicios';
-        }
-
-        // Validar la solicitud
-        $request->validate($rules);
-
-        // Actualizar los campos
-        if ($request->has('cod_servicio')) {
-            $servicio->cod_servicio = $request->input('cod_servicio');
-        }
-        if ($request->has('nombre')) {
-            $servicio->nombre = StringHelpers::strtoupper_updateServicio($request->input('nombre'));
-        }
+        $servicio->cod_servicio = $request->input('cod_servicio');
+        $servicio->nombre = StringHelpers::strtoupper_createServicio($request->input('nombre'));
         $servicio->tiempo_cita = $request->input('tiempo_cita');
         $servicio->autoriza_maternidad = $request->input('autoriza_maternidad');
         $servicio->activo = $request->input('activo');
         $servicio->id_update = auth()->user()->id;
         $servicio->fecha_update = now();
 
-        // Guardar los cambios
         $servicio->save();
 
         return redirect('/gestion_servicios')->with('success', 'Servicio actualizado correctamente.');

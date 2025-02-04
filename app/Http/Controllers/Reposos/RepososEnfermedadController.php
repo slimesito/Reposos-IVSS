@@ -95,8 +95,8 @@ class RepososEnfermedadController extends Controller
         ]);
 
         try {
-            DB::transaction(function () use ($request, &$nextIdReposo, &$expediente, &$reposo, &$forma_14144) {
-                $nextIdReposo = DB::selectOne("SELECT BDSAIVSSID.REPOSOS_ID_SEQ.NEXTVAL as id FROM dual")->id;
+            DB::transaction(function () use ($request, &$maxId, &$expediente, &$reposo, &$forma_14144) {
+                $maxId = DB::table('reposos')->max('id');
 
                 $cedula = session('cedula');
                 $usuario = auth()->user(); // Obtener el usuario autenticado
@@ -164,7 +164,7 @@ class RepososEnfermedadController extends Controller
                 $salarioDiario = $salarioMensual / 30; // Suponiendo un mes de 30 días
 
                 $reposo = Reposo::create([
-                    'id' => $nextIdReposo,
+                    'id' => $maxId + 1,
                     'id_expediente' => $expediente->id,
                     'cedula' => $cedula,
                     'id_empresa' => $idEmpresa,
@@ -200,9 +200,9 @@ class RepososEnfermedadController extends Controller
                 $salarioDiario = $salarioMensual / 30;
 
                 $forma_14144 = Forma_14144::create([
-                    'id_forma14144' => $nextIdReposo,
+                    'id_forma14144' => $maxId,
                     'id_centro_asistencial' => $usuario->id_centro_asistencial, // Obtener el centro asistencial del usuario autenticado
-                    'numero_relacion' => $nextIdReposo,
+                    'numero_relacion' => $maxId,
                     'fecha_elaboracion' => now(),
                     'numero_pagina' => 1,
                     'id_empresa' => $idEmpresa,

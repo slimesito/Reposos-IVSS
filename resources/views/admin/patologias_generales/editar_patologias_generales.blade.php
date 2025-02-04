@@ -20,8 +20,13 @@
         </div>
 
         <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">ID Capítulo:</label>
-          <input type="number" value="{{$patologiaGeneral->capitulo_id}}" name="capitulo_id" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+          <label for="capitulo_id" class="form-label">Capítulo:</label>
+          <select name="capitulo_id" class="form-select mb-3" id="capitulo_id" aria-label="Seleccione el Capítulo">
+              <option hidden selected value="{{ $patologiaGeneral->capitulo_id }}">{{ $patologiaGeneral->capitulo->descripcion }}</option>
+              @foreach($capitulos as $capitulo)
+                  <option value="{{ $capitulo->id }}">{{ $capitulo->descripcion }}</option>
+              @endforeach
+          </select>
         </div>
 
         <div class="mb-3">

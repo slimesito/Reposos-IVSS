@@ -1,6 +1,6 @@
 @extends('layout.layout')
 
-@section('title', 'Resultados Búsqueda')
+@section('title', 'Gestión Centro Asistencial')
 
 @section('content')
 
@@ -17,12 +17,11 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th scope="col">COD Centro</th>
+                        <th scope="col">Código</th>
                         <th scope="col">Nombre</th>
-                        <th scope="col">COD Estado</th>
-                        <th scope="col">Es Hospital?</th>
-                        <th scope="col">COD Tipo</th>
-                        <th scope="col">Nro. Reposo 1473</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Hospital</th>
+                        <th scope="col">Reposos</th>
                         <th scope="col">Rango IP</th>
                         <th scope="col">Activo</th>
                         <th scope="col">Acciones</th>
@@ -41,7 +40,6 @@
                                     No
                                 @endif
                             </td>
-                            <td>{{ $centroAsistencial->cod_tipo }}</td>
                             <td>{{ $centroAsistencial->nro_reposo_1473 }}</td>
                             <td>{{ $centroAsistencial->rango_ip }}</td>
                             <td>
@@ -57,14 +55,14 @@
                                     <form action="{{ route('editar.centro-asistencial.view', $centroAsistencial->id) }}" method="GET">
                                         @csrf
                                         <input type="hidden" name="_method">
-                                        <button type="submit" class="btn btn-warning rounded-pill m-2">Editar</button>
+                                        <button type="submit" class="btn btn-warning rounded-pill m-2"><i class="fa-solid fa-pen-to-square" title="Editar"></i></button>
                                     </form>
                                 
                                     <!-- Botón para eliminar -->
                                     <form id="delete-form-Centro Asistencial-{{ $centroAsistencial->id }}" action="{{ route('destroy.centro-asistencial', $centroAsistencial->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn btn-danger rounded-pill m-2" onclick="confirmDelete({{ $centroAsistencial->id }}, 'Centro Asistencial')">Eliminar</button>
+                                        <button type="button" class="btn btn-danger rounded-pill m-2" onclick="confirmDelete({{ $centroAsistencial->id }}, 'Centro Asistencial')"><i class="fa-regular fa-trash-can" title="Eliminar"></i></button>
                                     </form>
                                 </div>
                             </td>

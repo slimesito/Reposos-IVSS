@@ -42,12 +42,11 @@ class CapitulosController extends Controller
 
         try {
 
-            // Obtener el siguiente valor de la secuencia para el campo id
-            $nextId = DB::selectOne("SELECT BDSAIVSSID.CAPITULOS_ID_SEQ.NEXTVAL as id FROM dual")->id;
+            $maxId = DB::table('capitulos')->max('id');
 
             Capitulo::create([
-                'id' => $nextId,
-                'capitulo_id' => $request->capitulo_id,
+                'id' => $maxId + 1,
+                'capitulo_id' => StringHelpers::strtoupper_createCapitulos($request->capitulo_id),
                 'descripcion' => StringHelpers::strtoupper_createCapitulos($request->descripcion),
                 'activo' => true,
                 'id_create' => auth()->user()->id,
@@ -77,7 +76,7 @@ class CapitulosController extends Controller
             'activo' => 'required|boolean',
         ]);
 
-        $capitulo->capitulo_id = $request->input('capitulo_id');
+        $capitulo->capitulo_id = StringHelpers::strtoupper_createCapitulos($request->input('capitulo_id'));
         $capitulo->descripcion = StringHelpers::strtoupper_updateCapitulos($request->input('descripcion'));
         $capitulo->activo = $request->input('activo');
         $capitulo->id_update = auth()->user()->id;

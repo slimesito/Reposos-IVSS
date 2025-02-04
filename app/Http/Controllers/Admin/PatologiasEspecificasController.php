@@ -15,7 +15,7 @@ class PatologiasEspecificasController extends Controller
 {
     public function gestionPatologiasEspecificasView()
     {
-        $patologiasEspecificas = PatologiaEspecifica::orderBy('id')->paginate(30);
+        $patologiasEspecificas = PatologiaEspecifica::with('capitulo', 'patologiaGeneral')->orderBy('id')->paginate(20);
 
         return view('admin.patologias_especificas.gestion_patologias_especificas', ['patologiasEspecificas' => $patologiasEspecificas]);
     }
@@ -24,7 +24,8 @@ class PatologiasEspecificasController extends Controller
     {
         $query = StringHelpers::strtoupper_searchPatologiaEspecifica($request->input('patologiaEspecificaQuery'));
 
-        $patologiasEspecificas = PatologiaEspecifica::where('descripcion', 'LIKE', '%' . $query . '%')
+        $patologiasEspecificas = PatologiaEspecifica::with('capitulo')
+            ->where('descripcion', 'LIKE', '%' . $query . '%')
             ->paginate(10)
             ->appends(['patologiaEspecificaQuery' => $request->input('patologiaEspecificaQuery')]);
 
@@ -46,25 +47,23 @@ class PatologiasEspecificasController extends Controller
     public function createPatologiasEspecificas(Request $request)
     {
         $request->validate([
-            'capitulo_id' => 'required|numeric|max:19',
-            'id_pat_general' => 'required|max:19|',
-            'cod_pat_especifica' => 'required|max:19|',
-            'id_pat_especifica' => 'required|max:19|',
+            'capitulo_id' => 'required|numeric',
+            'id_pat_general' => 'required|numeric',
+            'cod_pat_especifica' => 'required|numeric',
+            'id_pat_especifica' => 'required|numeric',
             'descripcion' => 'required|max:250|unique:patologias_especificas,descripcion',
             'dias_reposo' => 'required|numeric',
         ]);
 
         try {
-            // Obtener el siguiente valor de la secuencia para el campo id
-            $nextId = DB::selectOne("SELECT BDSAIVSSID.PATOLOGIAS_ESPECIFICAS_ID_SEQ.NEXTVAL as id FROM dual")->id;
+            $maxId = DB::table('patologias_especificas')->max('id');
 
-            // Crear el nuevo registro
             PatologiaEspecifica::create([
-                'id' => $nextId,
+                'id' => $maxId + 1,
                 'capitulo_id' => $request->capitulo_id,
                 'id_pat_general' => $request->id_pat_general,
-                'cod_pat_especifica' => $request->id_pat_general,
-                'id_pat_especifica' => $request->id_pat_general,
+                'cod_pat_especifica' => $request->cod_pat_especifica,
+                'id_pat_especifica' => $request->id_pat_especifica,
                 'descripcion' => StringHelpers::strtoupper_createPatologiaEspecifica($request->descripcion),
                 'dias_reposo' => $request->dias_reposo,
                 'activo' => true,
@@ -82,8 +81,10 @@ class PatologiasEspecificasController extends Controller
 
     public function editarPatologiasEspecificasView($id)
     {
+        $capitulos = Capitulo::all();
+        $patologiasGenerales = PatologiaGeneral::all();
         $patologiaEspecifica = PatologiaEspecifica::findOrFail($id);
-        return view('admin.patologias_especificas.editar_patologias_especificas', compact('patologiaEspecifica'));
+        return view('admin.patologias_especificas.editar_patologias_especificas', compact('patologiaEspecifica', 'capitulos', 'patologiasGenerales'));
     }
 
     public function updatePatologiasEspecificas(Request $request, $id)
@@ -91,11 +92,11 @@ class PatologiasEspecificasController extends Controller
         $patologiaEspecifica = PatologiaEspecifica::findOrFail($id);
 
         $request->validate([
-            'capitulo_id' => 'required|numeric|max:19',
-            'id_pat_general' => 'required|max:19|',
-            'cod_pat_especifica' => 'required|max:19|',
-            'id_pat_especifica' => 'required|max:19|',
-            'descripcion' => 'required|max:250|unique:patologias_especificas,descripcion',
+            'capitulo_id' => 'required|numeric',
+            'id_pat_general' => 'required|numeric',
+            'cod_pat_especifica' => 'required|numeric',
+            'id_pat_especifica' => 'required|numeric',
+            'descripcion' => 'required|max:250|unique:patologias_especificas,descripcion,' . $patologiaEspecifica->id,
             'dias_reposo' => 'required|numeric',
             'activo' => 'required|boolean',
         ]);

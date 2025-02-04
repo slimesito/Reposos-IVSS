@@ -17,10 +17,8 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th scope="col">ID Capítulo</th>
-                        <th scope="col">ID Patología General</th>
-                        <th scope="col">COD Patología Específica</th>
-                        <th scope="col">ID Patología Específica</th>
+                        <th scope="col">Capítulo</th>
+                        <th scope="col">Patología General</th>
                         <th scope="col">Descripción</th>
                         <th scope="col">Días Reposo</th>
                         <th scope="col">Estado</th>
@@ -30,10 +28,8 @@
                 <tbody>
                     @foreach($patologiasEspecificas as $patologiaEspecifica)
                         <tr>
-                            <td>{{ $patologiaEspecifica->capitulo_id }}</td>
-                            <td>{{ $patologiaEspecifica->id_pat_general }}</td>
-                            <td>{{ $patologiaEspecifica->cod_pat_especifica }}</td>
-                            <td>{{ $patologiaEspecifica->id_pat_especifica }}</td>
+                            <td>{{ $patologiaEspecifica->capitulo->capitulo_id }}</td>
+                            <td>{{ $patologiaEspecifica->patologiaGeneral->pat_general_id }}</td>
                             <td>{{ $patologiaEspecifica->descripcion }}</td>
                             <td>{{ $patologiaEspecifica->dias_reposo }}</td>
                             <td>
@@ -49,14 +45,14 @@
                                     <form action="{{ route('editar.patologia-especifica.view', $patologiaEspecifica->id) }}" method="GET">
                                         @csrf
                                         <input type="hidden" name="_method">
-                                        <button type="submit" class="btn btn-warning rounded-pill m-2">Editar</button>
+                                        <button type="submit" class="btn btn-warning rounded-pill m-2"><i class="fa-solid fa-pen-to-square" title="Editar"></i></button>
                                     </form>
                                 
                                     <!-- Botón para eliminar -->
                                     <form id="delete-form-Patología Específica-{{ $patologiaEspecifica->id }}" action="{{ route('destroy.patologia-especifica', $patologiaEspecifica->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn btn-danger rounded-pill m-2" onclick="confirmDelete({{ $patologiaEspecifica->id }}, 'Patología Específica')">Eliminar</button>
+                                        <button type="button" class="btn btn-danger rounded-pill m-2" onclick="confirmDelete({{ $patologiaEspecifica->id }}, 'Patología Específica')"><i class="fa-regular fa-trash-can" title="Eliminar"></i></button>
                                     </form>
                                 </div>
                             </td>

@@ -23,7 +23,7 @@
                         <th>Patología General</th>
                         {{-- <th>Patología Específica</th> --}}
                         <th>Fecha de Creación</th>
-                        <th>Certificado en PDF</th>
+                        <th>PDF</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,7 +36,7 @@
                             {{-- <td>{{ $reposo->patologiaEspecifica->descripcion ?? 'N/A' }}</td> --}}
                             <td>{{ \Carbon\Carbon::parse($reposo->fecha_create)->format('d/m/Y h:i A') }}</td>
                             <td>
-                                <a href="{{ route('descargar.reposo.pdf', $reposo->id) }}" class="btn btn-danger rounded-pill m-2">Descargar</a>
+                                <a href="{{ route('descargar.reposo.pdf', $reposo->id) }}" class="btn btn-danger rounded-pill m-2" title="Descargar en PDF"><i class="fa-solid fa-download"></i></a>
                             </td>
                         </tr>
                     @endforeach

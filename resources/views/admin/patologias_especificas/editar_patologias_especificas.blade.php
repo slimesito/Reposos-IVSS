@@ -15,13 +15,23 @@
         @method('PUT')
 
         <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">ID Capítulo:</label>
-          <input type="number" value="{{$patologiaEspecifica->capitulo_id}}" name="capitulo_id" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+          <label for="capitulo_id" class="form-label">Capítulo:</label>
+          <select name="capitulo_id" class="form-select mb-3" id="capitulo_id">
+            <option hidden selected value="{{ $patologiaEspecifica->capitulo_id }}">{{ $patologiaEspecifica->capitulo->descripcion }}</option>
+            @foreach($capitulos as $capitulo)
+                <option value="{{ $capitulo->id }}">{{ $capitulo->descripcion }}</option>
+            @endforeach
+          </select>
         </div>
 
         <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">ID Patología General:</label>
-          <input type="number" value="{{$patologiaEspecifica->id_pat_general}}" name="id_pat_general" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+          <label for="capitulo_id" class="form-label">Patología General:</label>
+          <select name="id_pat_general" class="form-select mb-3" id="id_pat_general">
+            <option hidden selected value="{{ $patologiaEspecifica->id_pat_general }}">{{ $patologiaEspecifica->patologiaGeneral->descripcion }}</option>
+            @foreach($patologiasGenerales as $patologiaGeneral)
+              <option value="{{ $patologiaGeneral->id }}">{{ $patologiaGeneral->descripcion }}</option>
+            @endforeach
+          </select>
         </div>
 
         <div class="mb-3">

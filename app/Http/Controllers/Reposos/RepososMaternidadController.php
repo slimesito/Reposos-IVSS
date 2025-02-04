@@ -65,7 +65,7 @@ class RepososMaternidadController extends Controller
         // Añade un registro de depuración
         Log::info('Patologías Generales:', ['patologiasGenerales' => $patologiasGenerales]);
 
-        return view('reposos.nuevo_reposo_enfermedad', compact('servicios', 'capitulos', 'patologiasGenerales', 'patologiasEspecificas', 'lugares', 'motivos'));
+        return view('reposos.nuevo_reposo_maternidad', compact('servicios', 'capitulos', 'patologiasGenerales', 'patologiasEspecificas', 'lugares', 'motivos'));
     }
 
     public function getPatologiasGenerales($id)
@@ -93,8 +93,8 @@ class RepososMaternidadController extends Controller
         ]);
 
         try {
-            DB::transaction(function () use ($request, &$nextIdReposo, &$expediente, &$reposo, &$forma_14144) {
-                $nextIdReposo = DB::selectOne("SELECT BDSAIVSSID.REPOSOS_ID_SEQ.NEXTVAL as id FROM dual")->id;
+            DB::transaction(function () use ($request, &$maxId, &$expediente, &$reposo, &$forma_14144) {
+                $maxId = DB::table('reposos')->max('id');
 
                 $cedula = session('cedula');
                 $usuario = auth()->user();
@@ -128,6 +128,7 @@ class RepososMaternidadController extends Controller
                     $expediente->cantidad_reposos += 1;
                     $expediente->id_update = auth()->user()->id;
                     $expediente->fecha_update = now();
+
                     // Buscar todos los reposos de la persona y sumar los días indemnizables
                     $totalDiasIndemnizar = Reposo::where('cedula', $cedula)->sum('dias_indemnizar');
                     $expediente->dias_acumulados = $totalDiasIndemnizar;
@@ -162,7 +163,7 @@ class RepososMaternidadController extends Controller
 
                 // Crear el reposo
                 $reposo = Reposo::create([
-                    'id' => $nextIdReposo,
+                    'id' => $maxId + 1,
                     // 'numero_ref_reposo' => $request->numero_ref_reposo,
                     'id_expediente' => $expediente->id,
                     'cedula' => $cedula,
@@ -198,9 +199,9 @@ class RepososMaternidadController extends Controller
                 $indemnizacionesDiarias = $salarioMensual / $diasIndemnizar;
 
                 $forma_14144 = Forma_14144::create([
-                    'id_forma14144' => $nextIdReposo,
+                    'id_forma14144' => $maxId,
                     'id_centro_asistencial' => auth()->user()->id_centro_asistencial,
-                    'numero_relacion' => $nextIdReposo,
+                    'numero_relacion' => $maxId,
                     'fecha_elaboracion' => now(),
                     'numero_pagina' => 1,
                     'id_empresa' => $idEmpresa,

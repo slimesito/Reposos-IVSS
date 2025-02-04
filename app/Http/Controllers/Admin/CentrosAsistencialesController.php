@@ -47,12 +47,10 @@ class CentrosAsistencialesController extends Controller
         ]);
 
         try {
-            // Obtener el siguiente valor de la secuencia para el campo id
-            $nextId = DB::selectOne("SELECT BDSAIVSSID.CENTROS_ASISTENCIALES_ID_SEQ.NEXTVAL as id FROM dual")->id;
+            $maxId = DB::table('centros_asistenciales')->max('id');
 
-            // Crear el nuevo registro
             CentroAsistencial::create([
-                'id' => $nextId,
+                'id' => $maxId + 1,
                 'cod_centro' => $request->cod_centro,
                 'nombre' => StringHelpers::strtoupper_createCentroAsistencial($request->nombre),
                 'cod_estado' => $request->cod_estado,

@@ -79,7 +79,7 @@
                                     <form action="{{ route('editar.usuarios.view', $user->id) }}" method="GET">
                                         @csrf
                                         <input type="hidden" name="_method">
-                                        <button type="submit" class="btn btn-warning rounded-pill m-1">Editar</button>
+                                        <button type="submit" class="btn btn-warning rounded-pill m-1"><i class="fa-solid fa-pen-to-square" title="Editar"></i></button>
                                     </form>
                                 
                                     <!-- Botón para eliminar -->
@@ -87,7 +87,7 @@
                                     <form id="delete-form-Usuario-{{ $user->id }}" action="{{ route('usuarios.destroy', $user->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn btn-danger rounded-pill m-1" onclick="confirmDelete({{ $user->id }}, 'Usuario')">Eliminar</button>
+                                        <button type="button" class="btn btn-danger rounded-pill m-1" onclick="confirmDelete({{ $user->id }}, 'Usuario')"><i class="fa-regular fa-trash-can" title="Eliminar"></i></button>
                                     </form>
                                 </div>
                             </td>

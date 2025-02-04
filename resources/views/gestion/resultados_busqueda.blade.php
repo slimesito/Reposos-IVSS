@@ -37,11 +37,11 @@
                                     <form action="{{ route('aprobar.reposo', $reposo->id) }}" method="POST">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn btn-warning rounded-pill m-2">Aprobar</button>
+                                        <button type="submit" class="btn btn-warning rounded-pill m-2"><i class="fa-solid fa-check"></i></button>
                                     </form>
                             
                                     <!-- Botón para rechazar -->
-                                    <button type="button" class="btn btn-danger rounded-pill m-2" onclick="confirmReject('{{ $reposo->id }}', 'reposo')">Rechazar</button>
+                                    <button type="button" class="btn btn-danger rounded-pill m-2" onclick="confirmReject('{{ $reposo->id }}', 'reposo') title="Rechazar""><i class="fa-solid fa-xmark"></i></button>
                             
                                     <!-- Formulario oculto para rechazar -->
                                     <form id="reject-form-reposo-{{ $reposo->id }}" action="{{ route('rechazar.reposo', $reposo->id) }}" method="POST" style="display: none;">

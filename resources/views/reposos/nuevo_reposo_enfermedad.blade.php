@@ -113,12 +113,6 @@
                 <label for="observaciones" class="form-label">Observaciones:</label>
                 <input type="text" name="observaciones" class="form-control" id="observaciones">
             </div>
-
-            <!-- Campo deshabilitado para mostrar días a indemnizar -->
-            <div class="mb-3">
-                <label for="dias_indemnizar" class="form-label">Días a Indemnizar:</label>
-                <input type="text" name="dias_indemnizar" class="form-control" id="dias_indemnizar" disabled>
-            </div>
             
             <button class="btn btn-lg btn-primary m-2">Registrar</button>
 

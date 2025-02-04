@@ -21,22 +21,13 @@
             @endforeach
         </select>
       </div>
+
       <div class="mb-3">
           <label for="id_pat_general" class="form-label">Patología General:</label>
           <select name="id_pat_general" class="form-select mb-3" id="id_pat_general" aria-label="Seleccione la Patología General" disabled>
               <option hidden selected disabled>Seleccione la Patología General</option>
           </select>
       </div>
-
-      {{-- <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">ID Capítulo:</label>
-        <input type="number" name="capitulo_id" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
-      </div>
-
-      <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">ID Patología General:</label>
-        <input type="number" name="id_pat_general" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
-      </div> --}}
 
       <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Código Patología Específica:</label>
