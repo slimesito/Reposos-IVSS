@@ -3,6 +3,11 @@
 @section('title', 'Modificar Servicio')
 
 @section('content')
+  @include('layout.alerts.success-message')
+
+  @include('layout.alerts.reposos-success')
+
+  @include('layout.alerts.error-message')
 
   <div class="bg-secondary rounded h-100 p-4">
 
@@ -31,10 +36,16 @@
 
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">¿Autoriza Maternidad?:</label>
-            <select name="autoriza_maternidad" value="{{$servicio->autoriza_maternidad}}" class="form-select mb-3" aria-label="Default select example">
-                <option hidden selected>{{$servicio->autoriza_maternidad}}</option>
-                <option value="1">Sí</option>
-                <option value="0">No</option>
+            <select name="autoriza_maternidad" class="form-select mb-3" aria-label="Default select example">
+                <option hidden selected>
+                  @if ($servicio->autoriza_maternidad)
+                      Sí
+                  @else
+                      No
+                  @endif
+              </option>
+                <option value="1" {{ $servicio->autoriza_maternidad ? 'selected' : '' }}>Sí</option>
+                <option value="0" {{ !$servicio->autoriza_maternidad ? 'selected' : '' }}>No</option>
             </select>
           </div>
 

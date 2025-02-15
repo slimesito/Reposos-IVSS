@@ -191,6 +191,11 @@ class RepososMaternidadController extends Controller
                     'email_trabajador' => strtoupper($request->email_trabajador),
                 ]);
 
+                // Incrementar el campo nro_reposo_1473 en la tabla CentroAsistencial
+                $centroAsistencial = CentroAsistencial::where('id', $usuario->id_centro_asistencial)->first();
+                $centroAsistencial->nro_reposo_1473 += 1;
+                $centroAsistencial->save();
+
                 $totalDiasIndemnizar = Reposo::where('cedula', $cedula)->sum('dias_indemnizar');
                 $expediente->dias_acumulados = $totalDiasIndemnizar;
                 $expediente->id_ultimo_reposo = $reposo->id;
@@ -199,7 +204,7 @@ class RepososMaternidadController extends Controller
                 $indemnizacionesDiarias = $salarioMensual / $diasIndemnizar;
 
                 $forma_14144 = Forma_14144::create([
-                    'id_forma14144' => $maxId,
+                    'id_forma14144' => $maxId + 1,
                     'id_centro_asistencial' => auth()->user()->id_centro_asistencial,
                     'numero_relacion' => $maxId,
                     'fecha_elaboracion' => now(),

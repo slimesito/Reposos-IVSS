@@ -42,6 +42,9 @@
     <!-- Alerta Reposos -->
     <link rel="stylesheet" href="{!! asset('assets/css/alertaReposos.css') !!}">
 
+    <!-- Incluir Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
@@ -237,17 +240,7 @@
 
                 <div class="row g-4">
 
-                    <div class="col-sm-12 col-xl-12">
-
-                        @include('layout.alerts.success-message')
-
-                        @include('layout.alerts.reposos-success')
-
-                        @include('layout.alerts.error-message')
-
-                        @yield('content')
-
-                    </div>
+                    @yield('content')
 
                 </div>
 
@@ -255,23 +248,23 @@
 
             <!-- Footer Start -->
             <div class="container-fluid pt-4 px-4">
-              <div class="bg-secondary rounded-top p-4">
-                <div class="row">
-                  <div class="col-12 col-sm-6 text-center text-sm-start">
-                      &copy; <a href="">Reposos | IVSS</a>
-                  </div>
-                  <div class="col-12 col-sm-6 text-center text-sm-end">
-                      Por <a href="https://www.linkedin.com/in/william-villegas-ab3b94215/">William Villegas</a>
-                  </div>
+                <div class="bg-secondary rounded-top p-4">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 text-center text-sm-start">
+                            &copy; <a href="">Reposos | IVSS</a>
+                        </div>
+                        <div class="col-12 col-sm-6 text-center text-sm-end">
+                            Por <a href="https://www.linkedin.com/in/william-villegas-ab3b94215/">William Villegas</a>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
             <!-- Footer End -->
         </div>
         <!-- Content End -->
 
         <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top" style="display: none;"><i class="bi bi-arrow-up"></i></a>
+        <!-- <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top" style="display: none;"><i class="bi bi-arrow-up"></i></a> -->
 
     </div>
 

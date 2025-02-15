@@ -34,6 +34,31 @@
                 </select>
             </div>
 
+            <div class="mb-3">
+                <label for="inicio_prorroga" class="form-label">Inicio Prórroga:</label>
+                <input type="date" name="inicio_prorroga" class="form-control" id="inicio_prorroga" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="fin_prorroga" class="form-label">Fin Prórroga:</label>
+                <input type="date" name="fin_prorroga" class="form-control" id="fin_prorroga" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="evolucion" class="form-label">Evolución:</label>
+                <input type="text" name="evolucion" class="form-control" id="evolucion">
+            </div>
+
+            <div class="mb-3">
+                <label for="observaciones" class="form-label">Observaciones:</label>
+                <input type="text" name="observaciones" class="form-control" id="observaciones">
+            </div>
+
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono:</label>
+                <input type="number" name="telefono" class="form-control" id="telefono">
+            </div>
+
             <button class="btn btn-lg btn-primary m-2">Registrar</button>
 
         </form>

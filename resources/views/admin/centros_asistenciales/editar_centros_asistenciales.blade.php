@@ -44,11 +44,6 @@
         </div>
 
         <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">Número de Reposo 1473:</label>
-          <input type="number" value="{{$centroAsistencial->nro_reposo_1473}}" name="nro_reposo_1473" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
-        </div>
-
-        <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label">Rango de IP:</label>
           <input type="text" value="{{$centroAsistencial->rango_ip}}" name="rango_ip" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
         </div>
@@ -57,8 +52,8 @@
           <label for="exampleInputEmail1" class="form-label">Estado:</label>
           <select name="activo" value="{{$centroAsistencial->activo}}" placeholder="Seleccionar estado del Centro Asistencial" class="form-select mb-3" aria-label="Default select example">
               <option hidden selected>{{$centroAsistencial->activo}}</option>
-              <option value="1">Activo</option>
-              <option value="0">Inactivo</option>
+              <option value="1" {{ $centroAsistencial->activo ? 'selected' : '' }}>Activo</option>
+              <option value="0" {{ !$centroAsistencial->activo ? 'selected' : '' }}>Inactivo</option>
           </select>
         </div>
         

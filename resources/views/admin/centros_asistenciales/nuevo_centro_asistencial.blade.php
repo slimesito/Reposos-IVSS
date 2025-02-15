@@ -42,11 +42,6 @@
       </div>
 
       <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">Número de Reposo 1473:</label>
-        <input type="number" name="nro_reposo_1473" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
-      </div>
-
-      <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Rango de IP:</label>
         <input type="text" name="rango_ip" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
       </div>

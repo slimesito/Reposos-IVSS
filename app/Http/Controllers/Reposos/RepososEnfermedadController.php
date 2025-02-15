@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Reposos;
 use App\Http\Controllers\Controller;
 use App\Models\AseguradoEmpresa;
 use App\Models\Capitulo;
+use App\Models\CentroAsistencial;
 use App\Models\Ciudadano;
 use App\Models\Expediente;
 use App\Models\Forma_14144;
@@ -191,6 +192,11 @@ class RepososEnfermedadController extends Controller
                     'email_trabajador' => strtoupper($request->email_trabajador),
                 ]);
 
+                // Incrementar el campo nro_reposo_1473 en la tabla CentroAsistencial
+                $centroAsistencial = CentroAsistencial::where('id', $usuario->id_centro_asistencial)->first();
+                $centroAsistencial->nro_reposo_1473 += 1;
+                $centroAsistencial->save();
+
                 // Buscar todos los reposos de la persona y sumar los días indemnizables
                 $totalDiasIndemnizar = Reposo::where('cedula', $cedula)->sum('dias_indemnizar');
                 $expediente->dias_acumulados = $totalDiasIndemnizar;
@@ -200,7 +206,7 @@ class RepososEnfermedadController extends Controller
                 $salarioDiario = $salarioMensual / 30;
 
                 $forma_14144 = Forma_14144::create([
-                    'id_forma14144' => $maxId,
+                    'id_forma14144' => $maxId + 1,
                     'id_centro_asistencial' => $usuario->id_centro_asistencial, // Obtener el centro asistencial del usuario autenticado
                     'numero_relacion' => $maxId,
                     'fecha_elaboracion' => now(),
@@ -253,6 +259,7 @@ class RepososEnfermedadController extends Controller
             Log::error('Error al registrar el Reposo: ' . $e->getMessage(), [
                 'exception' => $e,
                 'request' => $request->all(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return redirect()->back()->with('error', 'Error al registrar el Reposo. Inténtalo nuevamente.');

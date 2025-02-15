@@ -42,7 +42,6 @@ class CentrosAsistencialesController extends Controller
             'cod_estado' => 'required|numeric|max:19',
             'es_hospital' => 'required|boolean',
             'cod_tipo' => 'required|numeric|max:19',
-            'nro_reposo_1473' => 'required|numeric',
             'rango_ip' => 'required|max:11',
         ]);
 
@@ -56,7 +55,6 @@ class CentrosAsistencialesController extends Controller
                 'cod_estado' => $request->cod_estado,
                 'es_hospital' => $request->es_hospital,
                 'cod_tipo' => $request->cod_tipo,
-                'nro_reposo_1473' => $request->nro_reposo_1473,
                 'rango_ip' => $request->rango_ip,
                 'activo' => true,
                 'id_create' => auth()->user()->id,
@@ -86,7 +84,6 @@ class CentrosAsistencialesController extends Controller
             'cod_estado' => 'required|numeric|max:19',
             'es_hospital' => 'required|boolean',
             'cod_tipo' => 'required|numeric|max:19',
-            'nro_reposo_1473' => 'required|numeric|max:19',
             'rango_ip' => 'required|max:11',
             'activo' => 'required|boolean',
         ];
@@ -114,7 +111,6 @@ class CentrosAsistencialesController extends Controller
         $centroAsistencial->cod_estado = $request->input('cod_estado');
         $centroAsistencial->es_hospital = $request->input('es_hospital');
         $centroAsistencial->cod_tipo = $request->input('cod_tipo');
-        $centroAsistencial->nro_reposo_1473 = $request->input('nro_reposo_1473');
         $centroAsistencial->rango_ip = $request->input('rango_ip');
         $centroAsistencial->activo = $request->input('activo');
         $centroAsistencial->id_update = auth()->user()->id;

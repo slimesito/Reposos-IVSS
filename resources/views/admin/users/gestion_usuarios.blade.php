@@ -4,6 +4,12 @@
 
 @section('content')
 
+    @include('layout.alerts.success-message')
+
+    @include('layout.alerts.reposos-success')
+
+    @include('layout.alerts.error-message')
+
     <div class="bg-secondary rounded h-100 p-4">
         <h6 class="mb-4">Usuarios Registrados</h6>
 

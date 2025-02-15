@@ -4,6 +4,12 @@
 
 @section('content')
 
+    @include('layout.alerts.success-message')
+
+    @include('layout.alerts.reposos-success')
+
+    @include('layout.alerts.error-message')
+
     <div class="bg-secondary rounded h-100 p-4">
         <h6 class="mb-4">Centros Asistenciales Registrados</h6>
 
@@ -17,12 +23,12 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th scope="col">Código</th>
+                        <!-- <th scope="col">Código</th> -->
                         <th scope="col">Nombre</th>
                         <th scope="col">Estado</th>
                         <th scope="col">Hospital</th>
                         <th scope="col">Reposos</th>
-                        <th scope="col">Rango IP</th>
+                        <!-- <th scope="col">Rango IP</th> -->
                         <th scope="col">Activo</th>
                         <th scope="col">Acciones</th>
                     </tr>
@@ -30,9 +36,9 @@
                 <tbody>
                     @foreach($centrosAsistenciales as $centroAsistencial)
                         <tr>
-                            <td>{{ $centroAsistencial->cod_centro }}</td>
+                            <!-- <td>{{ $centroAsistencial->cod_centro }}</td> -->
                             <td>{{ $centroAsistencial->nombre }}</td>
-                            <td>{{ $centroAsistencial->cod_estado }}</td>
+                            <td>{{ $centroAsistencial->estado->nombre }}</td>
                             <td>
                                 @if($centroAsistencial->es_hospital)
                                     Sí
@@ -41,12 +47,12 @@
                                 @endif
                             </td>
                             <td>{{ $centroAsistencial->nro_reposo_1473 }}</td>
-                            <td>{{ $centroAsistencial->rango_ip }}</td>
+                            <!-- <td>{{ $centroAsistencial->rango_ip }}</td> -->
                             <td>
                                 @if($centroAsistencial->activo)
-                                    Activo
+                                    Sí
                                 @else
-                                    Inactivo
+                                    No
                                 @endif
                             </td>
                             <td>

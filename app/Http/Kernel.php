@@ -74,5 +74,6 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
         'check.user.profile' => \App\Http\Middleware\CheckUserProfile::class,
+        'restrict.error404' => \App\Http\Middleware\RestrictError404Access::class,
     ];
 }

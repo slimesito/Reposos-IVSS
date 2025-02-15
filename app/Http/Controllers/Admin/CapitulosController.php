@@ -72,7 +72,7 @@ class CapitulosController extends Controller
 
         $request->validate([
             'capitulo_id' => 'required|max:150|unique:capitulos,capitulo_id,' . $id,
-            'descripcion' => 'required|max:150|unique:capitulos,descripcion,' . $id,
+            // 'descripcion' => 'required|max:150|unique:capitulos,descripcion,' . $id,
             'activo' => 'required|boolean',
         ]);
 

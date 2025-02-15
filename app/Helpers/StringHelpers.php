@@ -88,4 +88,9 @@ class StringHelpers
     {
         return strtoupper($string);
     }
+
+    public static function strtoupper_createProrrogas($string)
+    {
+        return strtoupper($string);
+    }
 }
