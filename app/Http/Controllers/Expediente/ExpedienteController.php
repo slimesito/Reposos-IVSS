@@ -124,7 +124,7 @@ class ExpedienteController extends Controller
             if (Storage::exists($filePath)) {
                 return Storage::download($filePath);
             } else {
-                return redirect()->back()->with('error', 'El certificado PDF no se encontró.');
+                return redirect()->back()->with('error', 'No se encontró el certificado PDF.');
             }
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Ocurrió un error al verificar el certificado PDF.');
@@ -136,11 +136,13 @@ class ExpedienteController extends Controller
         $user = auth()->user();
         
         if ($user->cod_cargo == 4) {
-            // Si el usuario es Master, se muestran todas las prorrogas
-            $prorrogas = Prorroga::paginate(20);
+            // Si el usuario es Master, se muestran todas las prórrogas ordenadas por fecha de creación descendente
+            $prorrogas = Prorroga::orderBy('fecha_create', 'desc')->paginate(20);
         } else {
-            // Sino, filtrar por id_centro_asistencial
-            $prorrogas = Prorroga::where('id_cent_asist', $user->id_centro_asistencial)->paginate(20);
+            // Sino, filtrar por id_centro_asistencial y ordenar por fecha de creación descendente
+            $prorrogas = Prorroga::where('id_cent_asist', $user->id_centro_asistencial)
+                                 ->orderBy('fecha_create', 'desc')
+                                 ->paginate(20);
         }
 
         // Formatear la cédula en el controlador
@@ -170,10 +172,11 @@ class ExpedienteController extends Controller
             $prorrogas->where('id_cent_asist', $user->id_centro_asistencial);
         }
 
-        // Filtrar por cédula y paginar el resultado
+        // Filtrar por cédula, ordenar por fecha_create descendente y paginar el resultado
         $prorrogas = $prorrogas->where('cedula', 'LIKE', "%{$query}%")
-                                ->paginate(10)
-                                ->appends(['prorrogasQuery' => $query]);
+                               ->orderBy('fecha_create', 'desc') // Ordenar por fecha de creación descendente
+                               ->paginate(10)
+                               ->appends(['prorrogasQuery' => $query]);
         
         // Formatear la cédula en el controlador
         foreach ($prorrogas as $prorroga) {
@@ -188,5 +191,21 @@ class ExpedienteController extends Controller
         }
 
         return view('expediente.resultados_busqueda_prorrogas', compact('prorrogas'));
+    }
+
+    public function descargarProrrogaPDF($id)
+    {
+        $prorroga = Prorroga::findOrFail($id);
+        $filePath = 'public/app/assets/certificados/prorrogas/F-14-73_PRORROGA_' . $prorroga->id . '.pdf';
+
+        try {
+            if (Storage::exists($filePath)) {
+                return Storage::download($filePath);
+            } else {
+                return redirect()->back()->with('error', 'No se encontró el certificado PDF.');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Ocurrió un error al verificar el certificado PDF.');
+        }
     }
 }

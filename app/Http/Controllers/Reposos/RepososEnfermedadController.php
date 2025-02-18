@@ -208,7 +208,7 @@ class RepososEnfermedadController extends Controller
                 $forma_14144 = Forma_14144::create([
                     'id_forma14144' => $maxId + 1,
                     'id_centro_asistencial' => $usuario->id_centro_asistencial, // Obtener el centro asistencial del usuario autenticado
-                    'numero_relacion' => $maxId,
+                    'numero_relacion' => $maxId + 1,
                     'fecha_elaboracion' => now(),
                     'numero_pagina' => 1,
                     'id_empresa' => $idEmpresa,

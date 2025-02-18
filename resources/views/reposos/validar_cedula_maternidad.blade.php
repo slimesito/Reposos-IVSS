@@ -4,9 +4,15 @@
 
 @section('content')
 
+    @include('layout.alerts.success-message')
+
+    @include('layout.alerts.reposos-success')
+
+    @include('layout.alerts.error-message')
+
     <div class="bg-secondary rounded h-100 p-4">
 
-        <h6 class="mb-4">Validar Cédula de Identidad del Paciente</h6>
+        <h6 class="mb-4">Validar Cédula de Identidad de la Paciente</h6>
 
         <form action="{{ route('validar.cedula.reposo.maternidad') }}" method="POST">
 

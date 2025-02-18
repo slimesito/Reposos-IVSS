@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Reposos;
 use App\Http\Controllers\Controller;
 use App\Models\AseguradoEmpresa;
 use App\Models\Capitulo;
+use App\Models\CentroAsistencial;
 use App\Models\Ciudadano;
 use App\Models\Expediente;
 use App\Models\Forma_14144;
@@ -41,14 +42,28 @@ class RepososMaternidadController extends Controller
             $formattedCedula = '2' . str_pad($cedula, 9, '0', STR_PAD_LEFT);
         }
 
-        // Realiza la consulta a la base de datos
+        // Realiza la consulta a la base de datos para verificar el asegurado
         $asegurado = AseguradoEmpresa::where('id_asegurado', $formattedCedula)->first();
 
         if ($asegurado) {
-            // Almacenar la cédula en la sesión
-            session(['cedula' => $formattedCedula]);
-            return redirect()->route('nuevo.reposo.maternidad.view');
+            // Verificar y ajustar la cédula para buscar en la tabla Ciudadano
+            $prefijo = substr($formattedCedula, 0, 1) === '1' ? 'V' : (substr($formattedCedula, 0, 1) === '2' ? 'E' : null);
+            $cedulaAjustada = $prefijo ? $prefijo . substr($formattedCedula, 1) : $formattedCedula;
+
+            // Buscar ciudadano en la tabla Ciudadano
+            $ciudadano = Ciudadano::where('id_ciudadano', $cedulaAjustada)->first();
+
+            // Validar si el ciudadano es femenino
+            if ($ciudadano && $ciudadano->sexo === 'F') { // Suponiendo que 'F' representa el sexo femenino
+                // Almacenar la cédula en la sesión
+                session(['cedula' => $formattedCedula]);
+                return redirect()->route('nuevo.reposo.maternidad.view');
+            } else {
+                // La cédula no corresponde a una ciudadana femenina
+                return redirect()->back()->withErrors(['cedula' => 'La cédula no corresponde a una ciudadana femenina.']);
+            }
         } else {
+            // No se encontró ningún asegurado con esa cédula
             return redirect()->back()->withErrors(['cedula' => 'No se encontró ningún asegurado con esa cédula.']);
         }
     }
@@ -206,7 +221,7 @@ class RepososMaternidadController extends Controller
                 $forma_14144 = Forma_14144::create([
                     'id_forma14144' => $maxId + 1,
                     'id_centro_asistencial' => auth()->user()->id_centro_asistencial,
-                    'numero_relacion' => $maxId,
+                    'numero_relacion' => $maxId + 1,
                     'fecha_elaboracion' => now(),
                     'numero_pagina' => 1,
                     'id_empresa' => $idEmpresa,

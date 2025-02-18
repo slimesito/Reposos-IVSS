@@ -5,7 +5,7 @@
 /public/build
 /public/hot
 /public/storage
-/routes/web.php
+# /routes/web.php
 /storage/*.key
 /vendor
 .env
@@ -19,17 +19,17 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-/app/Models/AseguradoEmpresa.php
-/app/Models/Capitulo.php
-/app/Models/CentroAsistencial.php
-/app/Models/Ciudadano.php
-/app/Models/Expediente.php
-/app/Models/Forma_14144.php
-/app/Models/Lugar.php
-/app/Models/Motivo.php
-/app/Models/PatologiaEspecifica.php
-/app/Models/PatologiaGeneral.php
-/app/Models/Prorroga.php
-/app/Models/Reposo.php
-/app/Models/Servicio.php
-/app/Models/User.php
+# /app/Models/AseguradoEmpresa.php
+# /app/Models/Capitulo.php
+# /app/Models/CentroAsistencial.php
+# /app/Models/Ciudadano.php
+# /app/Models/Expediente.php
+# /app/Models/Forma_14144.php
+# /app/Models/Lugar.php
+# /app/Models/Motivo.php
+# /app/Models/PatologiaEspecifica.php
+# /app/Models/PatologiaGeneral.php
+# /app/Models/Prorroga.php
+# /app/Models/Reposo.php
+# /app/Models/Servicio.php
+# /app/Models/User.php

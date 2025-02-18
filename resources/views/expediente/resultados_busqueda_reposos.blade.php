@@ -19,10 +19,10 @@
                     <tr>
                         <th>Cédula</th>
                         <th>Especialidad</th>
-                        {{-- <th>Capítulo</th> --}}
+                        <th>Capítulo</th>
                         <th>Patología General</th>
                         {{-- <th>Patología Específica</th> --}}
-                        <th>Fecha de Creación</th>
+                        <th>Fecha</th>
                         <th>PDF</th>
                     </tr>
                 </thead>
@@ -31,7 +31,7 @@
                         <tr>
                             <td>{{ $reposo->cedula_formateada }}</td>
                             <td>{{ $reposo->servicio->nombre }}</td>
-                            {{-- <td>{{ $reposo->capitulo->descripcion }}</td> --}}
+                            <td>{{ $reposo->capitulo->capitulo_id }}</td>
                             <td>{{ $reposo->patologiaGeneral->descripcion }}</td>
                             {{-- <td>{{ $reposo->patologiaEspecifica->descripcion ?? 'N/A' }}</td> --}}
                             <td>{{ \Carbon\Carbon::parse($reposo->fecha_create)->format('d/m/Y h:i A') }}</td>

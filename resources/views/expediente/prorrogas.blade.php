@@ -21,8 +21,9 @@
                         <th>Especialidad</th>
                         <th>Capítulo</th>
                         <th>Patología General</th>
-                        <th>Patología Específica</th>
-                        <th>Fecha de Creación</th>
+                        <!-- <th>Patología Específica</th> -->
+                        <th>Fecha</th>
+                        <th>PDF</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,10 +31,13 @@
                         <tr>
                             <td>{{ $prorroga->cedula_formateada }}</td>
                             <td>{{ $prorroga->servicio->nombre }}</td>
-                            <td>{{ $prorroga->capitulo->descripcion }}</td>
+                            <td>{{ $prorroga->capitulo->capitulo_id }}</td>
                             <td>{{ $prorroga->patologiaGeneral->descripcion }}</td>
-                            <td>{{ $prorroga->patologiaEspecifica->descripcion ?? 'N/A' }}</td>
+                            <!-- <td>{{ $prorroga->patologiaEspecifica->descripcion ?? 'N/A' }}</td> -->
                             <td>{{ \Carbon\Carbon::parse($prorroga->fecha_create)->format('d/m/Y h:i A') }}</td>
+                            <td>
+                                <a href="{{ route('descargar.prorroga.pdf', $prorroga->id) }}" class="btn btn-danger rounded-pill m-2" title="Descargar en PDF"><i class="fa-solid fa-download"></i></a>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
